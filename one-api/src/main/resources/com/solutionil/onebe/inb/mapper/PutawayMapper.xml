@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.inb.mapper.PutawayMapper">
+
+    <select id="findPutawayTargets" resultType="PutawayGrid">
+
+        select 'N' chk, i.inbound_id, it.cust_id, c.cust_nm, i.suppl_id, s.suppl_nm, i.item_id, it.item_cd, it.item_nm,  it.box_unit_qty, it.pallet_unit_qty,
+            i.loc_id as previous_loc_id, l.loc_nm as previous_loc_nm, null as locId, '' as locCd,
+            i.lot_no, i.exp_date, i.make_date,
+            i.total_qty as inbound_total_qty,
+            ifnull(sum(p.total_qty),0) as putaway_total_qty,
+            i.total_qty - ifnull(sum(p.total_qty),0) as remain_total_qty,
+            /*i.box_qty, i.case_qty, i.ea_qty,*/
+            0 as pallet_qty,
+            0 as box_qty,
+            0 as case_qty,
+            0 as ea_qty,
+            0 as total_qty
+        from onedb.t_inbound i
+        left join onedb.t_putaway p on i.inbound_id = p.inbound_id
+        inner join onedb.t_item it on i.item_id = it.item_id
+        left join onedb.t_suppl s on i.suppl_id = s.suppl_id
+        left join onedb.t_cust c on it.cust_id = c.cust_id
+        left join onedb.t_loc l on i.loc_id = l.loc_id
+        <where>
+            i.comp_id = #{compId}
+        and i.biz_id = #{bizId}
+        and i.inbound_date between #{fDate} and #{tDate}
+        and i.putaway_status = '00'
+        <if test="supplId != '' and supplId != null">
+            and i.suppl_id = #{supplId}
+        </if>
+        <if test="inboundId != '' and inboundId != null">
+            and i.inbound_id = #{inboundId}
+        </if>
+        </where>
+        group by i.inbound_id
+    </select>
+
+    <select id="getPutawayQtyByInboundId" resultType="int">
+        select ifnull(sum(total_qty),0)
+        from onedb.t_putaway
+        where inbound_id = #{inboundId}
+    </select>
+
+
+    <update id="updateInboundStatus">
+        update onedb.t_inbound
+        set putaway_status = '01'
+        where inbound_id = #{inboundId}
+    </update>
+
+    <!-- 적치 데이터 저장 -->
+    <insert id="savePutaway" useGeneratedKeys="true" keyProperty="putawayId">
+        INSERT INTO onedb.t_putaway (
+            inbound_id, comp_id, biz_id, wh_id, zone_id, loc_id,
+            item_id, lot_no, pallet_qty, box_qty, case_qty, ea_qty, total_qty, confirm_status,
+            putaway_date, make_date, exp_date, created_id, created_dt
+        )
+        VALUES (
+                   #{inboundId}, #{compId}, #{bizId}, #{whId},#{zoneId},#{locId},
+                   #{itemId}, #{lotNo}, COALESCE(#{palletQty},0),COALESCE(#{boxQty},0), COALESCE(#{caseQty},0), COALESCE(#{eaQty},0), COALESCE(#{totalQty},0), '00',
+                   #{putawayDate}, #{makeDate}, #{expDate}, #{userId}, NOW()
+               );
+
+    </insert>
+
+
+</mapper>

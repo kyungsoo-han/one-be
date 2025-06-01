@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.sys.mapper.SysLogMapper">
+
+    <!-- 사용자 등록 -->
+    <insert id="insertLoginLog">
+        INSERT INTO onedb.t_sys_login_log (
+            login_dt, user_id, result_cd, err_msg, internalIpAddress, externalIpAddress, hostName
+        ) VALUES (
+            NOW(), #{loginId}, '00', '', #{internalIpAddress}, #{externalIpAddress}, #{hostName}
+        )
+    </insert>
+
+
+</mapper>

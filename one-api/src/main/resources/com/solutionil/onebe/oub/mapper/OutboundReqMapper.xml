@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.oub.mapper.OutboundReqMapper">
+
+    <insert id="insertOutboundReq">
+        /*insertOutboundReq*/
+        <selectKey keyProperty="outboundReqId" resultType="long" order="AFTER">
+            SELECT IF(#{outboundReqId} IS NOT NULL AND #{outboundReqId} != 0, #{outboundReqId}, LAST_INSERT_ID())
+        </selectKey>
+
+        INSERT INTO onedb.t_outbound_req (
+            outbound_req_id, req_date, comp_id, biz_id,  status, exp_outbound_date, cust_id, deliv_id,
+            oub_type_cd, oub_class_cd, memo, created_id, created_dt
+        ) VALUES
+        (
+            #{outboundReqId},#{reqDate}, #{compId}, #{bizId}, '00', #{expOutboundDate}, #{custId},#{delivId},
+            #{oubTypeCd}, #{oubClassCd}, #{memo},  #{userId}, now()
+        )
+        on duplicate key update
+        exp_outbound_date = values(exp_outbound_date),
+        cust_id = values(cust_id),
+        deliv_id = values(deliv_id),
+        oub_type_cd = values(oub_type_cd),
+        oub_class_cd = values(oub_class_cd),
+        memo = values(memo),
+        modified_id = #{userId},
+        modified_dt = now()
+    </insert>
+
+    <update id="updateOutboundReq">
+        UPDATE onedb.t_outbound_req
+        SET
+            req_date = #{reqDate},
+            comp_id = #{compId},
+            biz_id = #{bizId},
+            status = #{status},
+            exp_outbound_date = #{expOutboundDate},
+            cust_id = #{custId},
+            oub_type_cd = #{oubTypeCd},
+            oub_class_cd = #{oubClassCd},
+            memo = #{memo}
+        WHERE outbound_req_id = #{outboundReqId}
+    </update>
+
+    <delete id="deleteOutboundReq">
+        DELETE FROM onedb.t_outbound_req
+        WHERE outbound_req_id = #{outboundReqId}
+    </delete>
+
+    <select id="findOutboundReqById" resultType="OutboundReqResponse">
+        /*findOutboundReqById*/
+        SELECT outbound_req_id, req_date, a.comp_id, biz_id, status, exp_outbound_date,
+               a.cust_id, tc.cust_nm, a.deliv_id,
+               tcd.deliv_nm,
+                oub_type_cd, oub_class_cd, a.memo
+        FROM onedb.t_outbound_req a
+        inner join onedb.t_cust tc on a.cust_id = tc.cust_id
+        inner join onedb.t_cust_deliv tcd on a.deliv_id = tcd.deliv_id
+        WHERE outbound_req_id = #{outboundReqId}
+    </select>
+
+    <select id="findOutboundReqs" resultType="OutboundReqGrid">
+        /*findOutboundReqs*/
+        SELECT outbound_req_id, req_date, cm.comm_nm as oubType, cm2.comm_nm as oubClass, s.cust_nm
+        FROM onedb.t_outbound_req po
+        inner join onedb.t_cust s on po.cust_id = s.cust_id
+        left join onedb.t_sys_commcode cm on po.oub_type_cd = cm.comm_cd and cm.comm_gbn = 'oubType'
+        left join onedb.t_sys_commcode cm2 on po.oub_class_cd = cm2.comm_cd and cm2.comm_gbn = 'oubClass'
+        <where>
+            po.biz_id = #{bizId}
+            and po.req_date between #{fDate} and #{tDate}
+            <if test="outboundReqId !='' and outboundReqId != null">
+                and po.outbound_req_id = #{outboundReqId}
+            </if>
+            <if test="custId !='' and custId != null">
+                and po.cust_id = #{custId}
+            </if>
+            <if test="oubTypeCd !='' and oubTypeCd != null">
+                and po.oub_type_cd = #{oubTypeCd}
+            </if>
+            <if test="oubClassCd !='' and oubClassCd != null">
+                and po.oub_class_cd = #{oubClassCd}
+            </if>
+        </where>
+
+    </select>
+
+    <!-- PO 품목 삽입 -->
+    <insert id="insertOutboundReqItem">
+
+        <selectKey keyProperty="seqNo" resultType="integer" order="BEFORE">
+            SELECT ifnull(MAX(seq_no),0) +1
+            FROM onedb.t_outbound_req_item
+            where outbound_req_id = #{outboundReqId}
+        </selectKey>
+
+        INSERT INTO onedb.t_outbound_req_item (
+            outbound_req_id, seq_no,  item_id, price_amt, req_qty,  memo
+        ) VALUES
+        <foreach collection="items" item="item" index="i"  separator=",">
+        (
+            #{outboundReqId},
+             <if test="item.seqNo == null">
+                #{seqNo} + #{i}
+            </if>
+            <if test="item.seqNo != null">
+                #{item.seqNo}
+            </if>
+            , #{item.itemId}, #{item.priceAmt}, #{item.reqQty},  #{item.memo}
+        )
+        </foreach>
+        on duplicate key update
+        item_id = values(item_id),
+        price_amt = values(price_amt),
+        req_qty = values(req_qty),
+        memo = values(memo)
+    </insert>
+
+    <!-- 품목 삭제 -->
+    <delete id="deleteOutboundReqItemsByPoId">
+        DELETE FROM onedb.t_outbound_req_item
+        WHERE outbound_req_id = #{outboundReqId}
+    </delete>
+
+    <!-- 품목 조회 -->
+    <select id="findOutboundReqItemById" resultType="OutboundReqItemResponse">
+        /*findOutboundReqItemById*/
+        SELECT seq_no, tori.item_id, ti.item_nm, price_amt, req_qty,  tori.memo
+        FROM onedb.t_outbound_req_item as tori
+        inner join onedb.t_item as ti on tori.item_id = ti.item_id
+        WHERE outbound_req_id = #{outboundReqId}
+    </select>
+
+    <!-- 품목 조회 -->
+    <select id="findOutboundReqItemSumById" resultType="OutboundReqItemSum">
+        /*findOutboundReqItemById*/
+        SELECT tori.item_id,  sum(req_qty) as req_qty
+        FROM onedb.t_outbound_req_item as tori
+        WHERE outbound_req_id In
+        <foreach collection="outboundReqIds" item="item" index="i"   open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        group by tori.item_id
+    </select>
+</mapper>

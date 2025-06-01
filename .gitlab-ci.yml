@@ -1,0 +1,134 @@
+image: gradle:latest
+
+stages:
+  - build
+  - deploy
+
+variables:
+  GITLAB_USER: "hanks"
+  GITLAB_TOKEN: "glpat-2g9o3m_iV8XDFvumxXjx"
+
+before_script:
+  - git config --global credential.helper store
+  - git remote set-url origin "http://$GITLAB_USER:$GITLAB_TOKEN@39.117.246.63:8081/one/one-be.git"
+
+# 공통 빌드 스텝 정의 (템플릿)
+.build-package-template:
+  script:
+    - cd $MODULE_DIR
+    - pwd
+    - rm -f build/libs/*.jar
+    - ../gradlew clean build -x test
+    - echo "빌드 결과:"
+    - ls -la build/libs
+  artifacts:
+    paths:
+      - $MODULE_DIR/build/libs/*.jar
+
+# 공통 배포 스텝 정의 (템플릿)
+.deploy-to-server-template:
+  script:
+    # 현재 디렉토리 출력
+    - pwd
+    - ls -al
+    # MODULE_DIR로 이동
+    - cd $MODULE_DIR || { echo "MODULE_DIR 경로로 이동할 수 없습니다. 경로가 정확한지 확인하세요."; exit 1; }
+    - export SERVER_IP="$TARGET_SERVER_IP"
+    #- export SERVER_USER="hanks"
+    - export SERVER_USER="root"  # root 계정으로 설정
+    - export DEST="$SERVER_USER@$SERVER_IP"
+    - pwd
+    - export JAR_PATH=$(find build/libs -name "$MODULE_NAME-*.jar")
+    # JAR 파일이 존재하는지 확인하고 없을 경우 오류 메시지 출력
+    - if [ -z "$JAR_PATH" ]; then echo "JAR 파일을 찾을 수 없습니다. 빌드 결과를 확인하세요."; exit 1; fi
+    # 원격 서버에 경로가 없으면 생성
+    - ssh -o StrictHostKeyChecking=no -i /home/gitlab-runner/.ssh/id_rsa $DEST "mkdir -p /app/servers/$MODULE_NAME || echo '디렉토리 생성 실패'"
+    # JAR 파일 전송
+    - scp -o StrictHostKeyChecking=no -i /home/gitlab-runner/.ssh/id_rsa $JAR_PATH $DEST:/app/servers/$MODULE_NAME || { echo "파일 전송 중 오류가 발생했습니다."; exit 1; }
+    ## 원격 서버에서 배포 스크립트 실행
+    #- ssh -o StrictHostKeyChecking=no -i /home/gitlab-runner/.ssh/id_rsa $DEST "bash /app/$MODULE_NAME/deploy.sh" || { echo "배포 스크립트 실행 중 오류가 발생했습니다."; exit 1; }
+    # 원격 서버에서 서비스 재시작
+    - ssh -o StrictHostKeyChecking=no -i /home/gitlab-runner/.ssh/id_rsa $DEST "sudo systemctl restart $MODULE_NAME.service" || { echo "서비스 재시작 중 오류가 발생했습니다."; exit 1; }
+    # 서비스 상태 확인
+    - ssh -o StrictHostKeyChecking=no -i /home/gitlab-runner/.ssh/id_rsa $DEST "sudo systemctl status $MODULE_NAME.service" || { echo "서비스 상태 확인 중 오류가 발생했습니다."; exit 1; }
+  dependencies:
+    - build-$MODULE_NAME
+
+# ONE API 빌드 및 배포 설정
+build-one-api:
+  stage: build
+  variables:
+    MODULE_NAME: "one-api"
+    MODULE_DIR: "one-api"
+  extends: .build-package-template
+  only:
+    - develop
+    - feature/*
+    - hotfix/*
+    - master
+
+deploy-one-api:
+  stage: deploy
+  variables:
+    MODULE_NAME: "one-api"
+    MODULE_DIR: "one-api"
+    TARGET_SERVER_IP: "192.168.0.13"
+  extends: .deploy-to-server-template
+  dependencies:
+    - build-one-api
+  only:
+    - develop
+    - feature/*
+    - hotfix/*
+    - master
+  when: manual
+#
+## Clare HTL API 빌드 및 배포 설정
+#build-clare-htl-api:
+#  stage: build
+#  variables:
+#    MODULE_NAME: "clare-htl-api"
+#    MODULE_DIR: "clare-htl-api"
+#  extends: .build-package-template
+#  only:
+#    - master
+#    - release/*
+#    - staging
+#
+#deploy-clare-htl-api:
+#  stage: deploy
+#  variables:
+#    MODULE_NAME: "clare-htl-api"
+#    TARGET_SERVER_IP: "192.168.0.14"
+#  extends: .deploy-to-server-template
+#  dependencies:
+#    - build-clare-htl-api
+#  only:
+#    - master
+#    - release/*
+#    - staging
+#  when: manual
+#
+## Clare TNA API 빌드 및 배포 설정
+#build-clare-tna-api:
+#  stage: build
+#  variables:
+#    MODULE_NAME: "clare-tna-api"
+#    MODULE_DIR: "clare-tna-api"
+#  extends: .build-package-template
+#  only:
+#    - production
+#    - hotfix/*
+#
+#deploy-clare-tna-api:
+#  stage: deploy
+#  variables:
+#    MODULE_NAME: "clare-tna-api"
+#    TARGET_SERVER_IP: "192.168.0.15"
+#  extends: .deploy-to-server-template
+#  dependencies:
+#    - build-clare-tna-api
+#  only:
+#    - production
+#    - hotfix/*
+#  when: manual

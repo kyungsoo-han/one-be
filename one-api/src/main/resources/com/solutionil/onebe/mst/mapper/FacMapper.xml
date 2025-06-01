@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.mst.mapper.FacMapper">
+
+    <insert id="insertFac">
+        INSERT INTO onedb.t_fac (
+            comp_id, biz_id, fac_cd, fac_nm, use_yn, memo, created_id, created_dt
+        ) VALUES (
+            #{compId}, #{bizId}, #{facCd}, #{facNm}, #{useYn}, #{memo}, #{userId}, now()
+        )
+    </insert>
+
+    <update id="updateFac">
+        UPDATE onedb.t_fac
+        SET
+            biz_id = #{bizId},
+            fac_cd = #{facCd},
+            fac_nm = #{facNm},
+            use_yn = #{useYn},
+            memo = #{memo},
+            modified_id = #{userId},
+            modified_dt = now()
+        WHERE fac_id = #{facId}
+    </update>
+
+    <delete id="deleteFac">
+        DELETE FROM onedb.t_fac
+        WHERE fac_id = #{facId}
+    </delete>
+
+    <select id="findFacById" resultType="Fac">
+        SELECT fac_id, comp_id, biz_id, fac_cd, fac_nm, use_yn, memo
+        FROM onedb.t_fac
+        WHERE fac_id = #{facId}
+    </select>
+
+    <select id="selectAllFactories" resultType="Fac">
+        SELECT fac_id, comp_id, biz_id, fac_cd, fac_nm, use_yn, memo
+        FROM onedb.t_fac
+    </select>
+
+</mapper>

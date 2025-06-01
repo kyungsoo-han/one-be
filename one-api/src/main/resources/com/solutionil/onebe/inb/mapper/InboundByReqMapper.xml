@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.inb.mapper.InboundByReqMapper">
+
+    <!-- 입고등록(요청별) -->
+    <select id="findInboundByReqMainGrid" resultType="InboundByReqMainGrid">
+        SELECT distinct inbound_req_id, req_date, cm.comm_nm as inbType, cm2.comm_nm as inbClass, po.suppl_id, s.suppl_nm, po_no, exp_deliv_date, po.memo,
+               po.appr_memo, po.appr_dt
+        FROM onedb.t_inbound_req po
+             inner join onedb.t_suppl s on po.suppl_id = s.suppl_id
+             inner join onedb.t_sys_commcode cm on po.inb_type_cd = cm.comm_cd and cm.comm_gbn = 'inbType'
+             inner join onedb.t_sys_commcode cm2 on po.inb_class_cd = cm2.comm_cd and cm2.comm_gbn = 'inbClass'
+             inner join onedb.t_inbound_req_item iri on po.inbound_req_id = iri.inbound_rerq_id and iri.inbound_status = '00'
+        <where>
+            po.biz_id = #{bizId}
+            and po.req_date between #{fDate} and #{tDate}
+            and po.status = '01'
+            <if test="inboundReqId !='' and inboundReqId != null">
+                and po.inbound_req_id = #{inboundReqId}
+            </if>
+            <if test="supplId !='' and supplId != null">
+                and po.suppl_id = #{supplId}
+            </if>
+        </where>
+        ORDER BY po.req_date,po.inbound_req_id
+    </select>
+
+    <!-- 입고등록(요청별) -->
+    <select id="findInboundByReqDetailGrid" resultType="InboundByReqItemGrid">
+        SELECT 'N' chk, ir.seq_no as ref_seq, ir.item_id, it.box_unit_qty,
+               ir.price_amt, ir.req_qty, 0 as box_qty, 0 as case_qty, 0 as ea_qty, 0 as total_qty,
+               ir.make_date, ir.make_lot_no, ir.exp_date, ir.memo
+        FROM onedb.t_inbound_req_item ir
+             Left Join onedb.t_item it on it.item_id = ir.item_id
+        WHERE inbound_rerq_id = #{inboundReqId} and inbound_status = '00'
+    </select>
+
+</mapper>

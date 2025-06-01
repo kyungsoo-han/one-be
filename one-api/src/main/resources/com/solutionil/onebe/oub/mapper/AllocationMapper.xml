@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.oub.mapper.AllocationMapper">
+
+    <insert id="applyAllocation">
+        INSERT INTO onedb.t_allocation(
+            allocation_id, comp_id, biz_id, cust_id, deliv_id, auto_allocation_id, outbound_req_id,
+            item_id, box_qty, case_qty, ea_qty, total_qty, exp_date, maake_date, lot_no,
+            wh_id, zone_id, loc_id, picking_status, created_id, created_dt
+        ) VALUES (
+                     #{allocationId},        -- 할당 ID
+                     #{compId},           -- 회사 ID
+                     #{bizId},          -- 비즈니스 ID
+                     #{custId},          -- 고객 ID
+                     #{delivId},          -- 배송 ID
+                     #{autoAllocationId},    -- 자동 할당 ID
+                     #{outboundReqId},       -- 출고 요청 ID
+                     #{itemId},              -- 품목 ID
+                     #{boxQty},              -- 박스 수량
+                     #{caseQty},             -- 케이스 수량
+                     #{eaQty},               -- 낱개 수량
+                     #{totalQty},            -- 총 수량
+                     #{expDate},             -- 유효 기간
+                     #{makeDate},            -- 제조 날짜
+                     #{lotNo},               -- LOT 번호
+                     #{whId},         -- 창고 ID
+                     #{zoneId},              -- 존 ID
+                     #{locId},          -- 위치 ID
+                     'N',       -- 피킹 상태
+                     #{userId},           -- 생성자 ID
+                     now()           -- 생성 날짜
+
+                 );
+    </insert>
+
+    <insert id="saveAutoAllocation">
+        insert into onedb.t_auto_allocation
+        (auto_alloc_id, comp_id, biz_id, status, memo, created_id, created_dt)
+        values
+        <foreach collection="request" item="item" index="i"  separator=",">
+            (#{item.autoAllocationId}, #{item.compId}, #{item.bizId}, '00', #{item.memo}, #{item.userId}, now())
+        </foreach>
+        on duplicate key update
+        memo = values(memo),
+        modified_dt = now(),
+        modified_id = values(created_id)
+    </insert>
+
+    <insert id="saveAutoAllocationSub">
+        insert into onedb.t_auto_allocation_sub
+        (auto_allocation_id, outbound_req_id, created_id, created_dt)
+        values
+            (#{autoAllocationId}, #{outboundReqId}, #{userId}, now())
+        on duplicate key update
+        modified_dt = now(),
+        modified_id = values(created_id);
+
+        update onedb.t_outbound_req
+        set allocation_yn = 'Y'
+        where outbound_req_id = #{outboundReqId};
+    </insert>
+
+    <delete id="deleteAutoAllocation">
+        Update onedb.t_outbound_req tor
+            inner join onedb.t_auto_allocation_sub a on a.outbound_req_id = tor.outbound_req_id
+        set tor.allocation_yn = 'N'
+        where a.auto_allocation_id = #{autoAllocationId};
+
+        Delete From onedb.t_auto_allocation where auto_allocation_id = #{autoAllocationId} ;
+        Delete From onedb.t_auto_allocation_sub where auto_allocation_id = #{autoAllocationId} ;
+
+    </delete>
+
+    <delete id="deleteAutoAllocationSub">
+        Delete From onedb.t_auto_allocation_sub where auto_allocation_id = #{autoAllocationId} and outbound_req_id = #{outboundReqId};
+
+        Update onedb.t_outbound_req
+        set allocation_yn = 'N'
+        where outbound_req_id = #{outboundReqId};
+    </delete>
+
+    <select id="findAutoAllocations" resultType="AutoAllocationMainGrid" parameterType="AutoAllocationSrchRequest">
+        select auto_allocation_id, status,
+               case when status ='00' then '신규' when status ='01' then '부분할당' else '완전할당' end status_nm,
+               a.memo, u.user_nm as created_nm, a.created_dt
+        from onedb.t_auto_allocation a
+                 inner join onedb.t_sys_user u on a.created_id = u.user_id and a.comp_id = u.comp_id
+        where a.comp_id = #{compId}
+          and biz_id = #{bizId}
+          and created_dt between STR_TO_DATE(#{fDate}, '%Y-%m-%d')  and DATE_ADD(STR_TO_DATE(#{tDate}, '%Y-%m-%d'), INTERVAL 1 DAY) - INTERVAL 1 SECOND
+    </select>
+
+    <select id="findAutoAllocationSubs" resultType="AutoAllocationDetailGrid" parameterType="Long">
+
+        select taas.outbound_req_id,
+               case when tor.allocation_status ='00' then '미할당' when tor.allocation_status ='01' then '부분할당' else '완전할당' end status,
+               tor.cust_id, ts.cust_nm, tor.deliv_id, td.deliv_nm, tor.memo
+        from onedb.t_auto_allocation_sub as taas
+        inner join onedb.t_outbound_req as tor on taas.outbound_req_id = tor.outbound_req_id
+        inner join onedb.t_cust as ts on tor.cust_id = ts.cust_id
+        inner join onedb.t_cust_deliv as td on tor.deliv_id = td.deliv_id
+        where taas.auto_allocation_id = #{autoAllocationId}
+    </select>
+
+
+
+</mapper>

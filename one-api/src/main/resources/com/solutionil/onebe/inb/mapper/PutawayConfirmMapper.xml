@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.inb.mapper.PutawayConfirmMapper">
+
+    <select id="findPutaways" resultType="PutawayConfirmGrid">
+
+
+        select 'N' chk, i.putaway_id, i.inbound_id, it.cust_id, c.cust_nm,  i.item_id, it.item_cd, it.item_nm,  it.box_unit_qty, it.pallet_unit_qty,
+               i.wh_id, i.zone_id, ib.loc_id as previous_loc_id, lc.loc_nm as previous_loc_nm, i.loc_id, l.loc_cd, i.lot_no, i.exp_date, i.make_date,
+               i.pallet_qty, i.box_qty, i.case_qty, i.ea_qty, i.total_qty
+        from onedb.t_putaway i
+        inner join onedb.t_inbound ib on i.inbound_id = ib.inbound_id
+        inner join onedb.t_item it on i.item_id = it.item_id
+        left join onedb.t_cust c on it.cust_id = c.cust_id
+        left join onedb.t_loc l on i.loc_id = l.loc_id
+        left join onedb.t_loc lc on ib.loc_id = lc.loc_id
+
+        <where>
+            i.comp_id = #{compId}
+        and i.biz_id = #{bizId}
+        and i.putaway_date between #{fDate} and #{tDate}
+        and i.confirm_status = '00'
+        <if test="inboundId != '' and inboundId != null">
+            and i.inbound_id = #{inboundId}
+        </if>
+        </where>
+        ORDER BY i.putaway_id
+    </select>
+
+    <update id="confirmPutaways">
+        update onedb.t_putaway
+        set confirm_status = '01'
+        where putaway_id = #{putawayId}
+    </update>
+
+    <delete id="deletePutaways">
+        delete from onedb.t_putaway where putaway_id = #{putawayId};
+
+        update onedb.t_inbound
+        set putaway_status = '00'
+        where inbound_id = #{inboundId};
+    </delete>
+
+</mapper>

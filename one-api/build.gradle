@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'kr.hankyungsoo'
+version = '0.0.1-SNAPSHOT'
+
+bootJar.enabled = true;
+jar.enabled = false;
+
+repositories {
+    mavenCentral()
+}
+jar {
+    archiveBaseName = 'one-api'
+    archiveVersion = '1.0.0' // 필요 시 버전도 지정할 수 있습니다.
+    archiveClassifier = '' // 필요에 따라 분류자도 설정할 수 있습니다.
+}
+/*configurations {
+    all*.exclude module: 'spring-boot-starter-logging'
+
+}*/
+dependencies {
+    //implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    //implementation 'org.springdoc:springdoc-openapi-ui:1.6.10' // 스프링 3 미만
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0' // 스프링 3 이상
+    implementation 'org.jcodec:jcodec:0.2.5'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+   	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    //log
+    implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+    //implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}

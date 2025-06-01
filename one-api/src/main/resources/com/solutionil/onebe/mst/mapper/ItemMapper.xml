@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.mst.mapper.ItemMapper">
+
+        <insert id="insertItem">
+            <selectKey keyProperty="itemId" resultType="integer" order="AFTER">
+                SELECT LAST_INSERT_ID()
+            </selectKey>
+
+            INSERT INTO onedb.t_item (
+                comp_id, item_cd, item_nm, item_snm, item_enm, use_yn, standard, item_unit_cd, item_type_cd, set_yn,
+                cust_id, barcode,  box_barcode, pallet_barcode,  box_unit_qty, pallet_unit_qty, moq,
+                category_lv1, category_lv2, category_lv3, inspect_yn, safe_stock_qty,
+                storage_type_cd, width, depth, height, weight, memo,
+                created_id, created_dt
+            ) VALUES (
+                #{compId}, #{itemCd}, #{itemNm}, #{itemSnm}, #{itemEnm}, #{useYn}, #{standard}, #{itemUnitCd}, #{itemTypeCd}, #{setYn},
+                #{custId}, #{barcode}, #{boxBarcode}, #{palletBarcode},  #{boxUnitQty}, #{palletUnitQty}, #{moq},
+                #{categoryLv1}, #{categoryLv2}, #{categoryLv3}, #{inspectYn}, COALESCE(#{safeStockQty},0),
+                #{storageTypeCd}, #{width}, #{depth}, #{height}, #{weight}, #{memo},
+                #{userId}, now()
+            )
+            on duplicate key update
+                item_nm = values(item_nm)
+                , item_snm = values(item_snm)
+                , item_enm = values(item_enm)
+                , use_yn = values(use_yn)
+                , standard = values(standard)
+                , item_unit_cd = values(item_unit_cd)
+                , item_type_cd = values(item_type_cd)
+                , set_yn = values(set_yn)
+                , cust_id = values(cust_id)
+                , barcode = values(barcode)
+                , box_barcode = values(box_barcode)
+                , pallet_barcode = values(pallet_barcode)
+                , box_unit_qty = values(box_unit_qty)
+                , pallet_unit_qty = values(pallet_unit_qty)
+                , moq = values(moq)
+                , category_lv1 = values(category_lv1)
+                , category_lv2 = values(category_lv2)
+                , category_lv3 = values(category_lv3)
+                , inspect_yn = values(inspect_yn)
+                , safe_stock_qty = values(safe_stock_qty)
+                , storage_type_cd = values(storage_type_cd)
+                , width = values(width)
+                , depth = values(depth)
+                , height = values(height)
+                , weight = values(weight)
+                , memo = values(memo)
+                , modified_id = #{userId}
+                , modified_dt = now()
+        </insert>
+
+    <delete id="deleteItem">
+        DELETE FROM onedb.t_item
+        WHERE item_id = #{itemId}
+    </delete>
+
+    <select id="findItemById" resultType="ItemResponse">
+        SELECT
+            item_id, comp_id, item_cd , item_nm, item_snm, item_enm, use_yn, standard, item_unit_cd, item_type_cd, set_yn,
+            cust_id,  barcode,box_barcode, pallet_barcode,  box_unit_qty, pallet_unit_qty, moq,
+            category_lv1, category_lv2, category_lv3, inspect_yn, safe_stock_qty,
+             storage_type_cd, width, depth, height, weight, memo
+        FROM onedb.t_item
+        WHERE item_id = #{itemId}
+    </select>
+
+    <select id="findItems" resultType="MstItemGrid" parameterType="BaseSrchRequest">
+        SELECT
+            item_id, comp_id, item_cd, item_nm,  a.use_yn, standard,b.comm_nm as itemType
+        FROM onedb.t_item a
+        left join  onedb.t_sys_commcode b on a.item_type_cd = b.comm_cd and b.comm_gbn = 'itemType'
+        <where>
+            <if test="code != '' and code != null">
+                and item_cd = #{code}
+            </if>
+            <if test="name != '' and name != null">
+                and item_nm like concat('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

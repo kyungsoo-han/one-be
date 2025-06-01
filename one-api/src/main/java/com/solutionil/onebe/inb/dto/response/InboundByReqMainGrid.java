@@ -1,0 +1,41 @@
+package com.solutionil.onebe.inb.dto.response;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
+@Data
+@Schema(description = "입고등록(요청별) 메인 그리드")
+public class InboundByReqMainGrid {
+    @Schema(description = "PO 아이디", example = "1")
+    private Long inboundReqId;
+
+    @Schema(description = "PO 일자", example = "2024-08-31")
+    private String reqDate;
+
+    @Schema(description = "공급사 ID", example = "1")
+    private Integer supplId;
+
+    @Schema(description = "공급사 명", example = "공급사")
+    private String supplNm;
+
+    @Schema(description = "PO 유형", example = "REGULAR")
+    private String inbType;
+
+    @Schema(description = "PO 구분", example = "STANDARD")
+    private String inbClass;
+
+    @Schema(description = "PO NO")
+    private String poNo;
+
+    @Schema(description = "메모")
+    private String memo;
+
+    @Schema(description = "승인 메모")
+    private String apprMemo;
+
+    @Schema(description = "승인일")
+    private String apprDt;
+
+    @Schema(description = "납기예정일")
+    private String expDelivDate;
+}

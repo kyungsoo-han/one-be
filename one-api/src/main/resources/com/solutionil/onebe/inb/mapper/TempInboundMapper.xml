@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.inb.mapper.TempInboundMapper">
+    <select id="popupPOList">
+        select x.po_date, x.po_id, x2.seq_no as po_seq_no, x.cust_id, x3.cust_cd, x3.cust_nm, x.memo,
+               cm.comm_nm as po_gbn_nm, cm2.comm_nm as po_type_nm,
+               x2.item_id, x4.item_cd, x4.item_nm,x2.item_qty, x.deliv_req_date, x2.memo sub_memo
+        from onedb.t_purchase_order x
+            inner join onedb.t_purchase_order_item x2 on x.po_id = x2.po_id
+            inner join onedb.t_cust x3 on x.cust_id = x3.cust_id
+            inner join onedb.t_item x4 on x2.item_id = x4.item_id
+            inner join onedb.t_sys_commcode cm on x.po_gbn = cm.comm_cd and cm.comm_gbn = 'poGbn'
+            inner join onedb.t_sys_commcode cm2 on x.po_type = cm2.comm_cd and cm2.comm_gbn = 'poType'
+
+    </select>
+
+</mapper>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solutionil.onebe.mst.mapper.EmployeeMapper">
+
+    <select id="findEmployees" resultType="EmployeeResponse">
+         SELECT emp_id,emp_no, emp_nm, emp_enm, emp_cnm, te.dept_id, td.dept_nm
+         FROM onedb.t_emp as te
+         inner join onedb.t_dept as td on te.dept_id = td.dept_id
+         <where>
+            td.comp_id = #{compId}
+             <if test="bizId != '' and bizId != null">
+                and te.biz_id = #{bizId}
+             </if>
+             <if test="deptNm != '' and deptNm != null">
+                and td.dept_nm like concat('%',#{deptNm},'%')
+             </if>
+             <if test="empNm != '' and empNm != null">
+                and te.emp_nm like concat('%',#{empNm},'%')
+             </if>
+             <if test="jobPosition != '' and jobPosition != null">
+                and te.job_position like concat('%',#{jobPosition},'%')
+             </if>
+             <if test="jobDuty != '' and jobDuty != null">
+                and te.job_duty like concat('%',#{jobDuty},'%')
+             </if>
+             <if test="enterFdate != '' and enterFdate != null">
+                and te.enter_date between #{enterFdate} and #{enterTdate}
+             </if>
+             <if test="resignFdate != '' and resignFdate != null">
+                and te.resign_date between #{resignFdate} and #{resignTdate}
+             </if>
+         </where>
+     </select>
+
+    <select id="findEmployee" resultType="EmployeeResponse">
+        SELECT comp_id, biz_id, emp_no, emp_nm, emp_enm, emp_cnm, dept_id, gender, emp_regi_no,
+                              birth_date, nation, working_state, hire_gbn, job_kind, employment_type, salary_type, job_position,
+                              job_duty, job_rank, enter_date, probation_fdate, probation_tdate, resign_date, resign_reason, resign_reason_remark,
+                              email, phone_no, tel_no, hobby, ability, religion, marry_yn, marry_date, urgent_contact, car_no, car_model,
+                              car_oil, zip_no, zip_addr1, zip_addr2, zip_addr_eng, memo, military_except_yn, disability, height, weight,
+                              foot_size, sight_left, sight_right, blood_type, blood_rh, military_state, military_type, military_rank,
+                              military_specialty, military_no, discharge_gbn, military_fdate, military_tdate, military_except_reason,
+                              disability_gbn, disability_level
+        FROM onedb.t_emp WHERE emp_no = #{empNo} and biz_id = #{bizId} and comp_id = #{compId}
+    </select>
+    <select id="findEmployeeById" resultType="EmployeeResponse">
+        SELECT comp_id, biz_id, emp_no, emp_nm, emp_enm, emp_cnm, dept_id, gender, emp_regi_no,
+                              birth_date, nation, working_state, hire_gbn, job_kind, employment_type, salary_type, job_position,
+                              job_duty, job_rank, enter_date, probation_fdate, probation_tdate, resign_date, resign_reason, resign_reason_remark,
+                              email, phone_no, tel_no, hobby, ability, religion, marry_yn, marry_date, urgent_contact, car_no, car_model,
+                              car_oil, zip_no, zip_addr1, zip_addr2, zip_addr_eng, memo, military_except_yn, disability, height, weight,
+                              foot_size, sight_left, sight_right, blood_type, blood_rh, military_state, military_type, military_rank,
+                              military_specialty, military_no, discharge_gbn, military_fdate, military_tdate, military_except_reason,
+                              disability_gbn, disability_level
+        FROM onedb.t_emp WHERE emp_id = #{empId};
+    </select>
+
+     <insert id="saveEmployee">
+         INSERT INTO onedb.t_emp (comp_id, biz_id, emp_no, emp_nm, emp_enm, emp_cnm, dept_id, gender, emp_regi_no,
+             birth_date, nation, working_state, hire_gbn, job_kind, employment_type, salary_type, job_position,
+             job_duty, job_rank, enter_date, probation_fdate, probation_tdate, resign_date, resign_reason, resign_reason_remark,
+             email, phone_no, tel_no, hobby, ability, religion, marry_yn, marry_date, urgent_contact, car_no, car_model,
+             car_oil, zip_no, zip_addr1, zip_addr2, zip_addr_eng, memo, military_except_yn, disability, height, weight,
+             foot_size, sight_left, sight_right, blood_type, blood_rh, military_state, military_type, military_rank,
+             military_specialty, military_no, discharge_gbn, military_fdate, military_tdate, military_except_reason,
+             disability_gbn, disability_level, created_id, created_dt, modified_id, modified_dt)
+         VALUES (#{compId}, #{bizId}, #{empNo}, #{empNm}, #{empEnm}, #{empCnm}, #{deptId}, #{gender}, #{empRegiNo},
+             #{birthDate}, #{nation}, #{workingState}, #{hireGbn}, #{jobKind}, #{employmentType}, #{salaryType},
+             #{jobPosition}, #{jobDuty}, #{jobRank}, #{enterDate}, #{probationFdate}, #{probationTdate}, #{resignDate},
+             #{resignReason}, #{resignReasonRemark}, #{email}, #{phoneNo}, #{telNo}, #{hobby}, #{ability}, #{religion},
+             #{marryYn}, #{marryDate}, #{urgentContact}, #{carNo}, #{carModel}, #{carOil}, #{zipNo}, #{zipAddr1},
+             #{zipAddr2}, #{zipAddrEng}, #{memo}, #{militaryExceptYn}, #{disability}, #{height}, #{weight},
+             #{footSize}, #{sightLeft}, #{sightRight}, #{bloodType}, #{bloodRh}, #{militaryState}, #{militaryType},
+             #{militaryRank}, #{militarySpecialty}, #{militaryNo}, #{dischargeGbn}, #{militaryFdate}, #{militaryTdate},
+             #{militaryExceptReason}, #{disabilityGbn}, #{disabilityLevel}, #{userId}, now(),
+             #{userId}, now())
+         ON DUPLICATE KEY UPDATE
+                emp_nm = VALUES(emp_nm),
+                emp_enm = VALUES(emp_enm),
+                emp_cnm = VALUES(emp_cnm),
+                dept_id = VALUES(dept_id),
+                gender = VALUES(gender),
+                emp_regi_no = VALUES(emp_regi_no),
+                birth_date = VALUES(birth_date),
+                nation = VALUES(nation),
+                working_state = VALUES(working_state),
+                hire_gbn = VALUES(hire_gbn),
+                job_kind = VALUES(job_kind),
+                employment_type = VALUES(employment_type),
+                salary_type = VALUES(salary_type),
+                job_position = VALUES(job_position),
+                job_duty = VALUES(job_duty),
+                job_rank = VALUES(job_rank),
+                enter_date = VALUES(enter_date),
+                probation_fdate = VALUES(probation_fdate),
+                probation_tdate = VALUES(probation_tdate),
+                resign_date = VALUES(resign_date),
+                resign_reason = VALUES(resign_reason),
+                resign_reason_remark = VALUES(resign_reason_remark),
+                email = VALUES(email),
+                phone_no = VALUES(phone_no),
+                tel_no = VALUES(tel_no),
+                hobby = VALUES(hobby),
+                ability = VALUES(ability),
+                religion = VALUES(religion),
+                marry_yn = VALUES(marry_yn),
+                marry_date = VALUES(marry_date),
+                urgent_contact = VALUES(urgent_contact),
+                car_no = VALUES(car_no),
+                car_model = VALUES(car_model),
+                car_oil = VALUES(car_oil),
+                zip_no = VALUES(zip_no),
+                zip_addr1 = VALUES(zip_addr1),
+                zip_addr2 = VALUES(zip_addr2),
+                zip_addr_eng = VALUES(zip_addr_eng),
+                memo = VALUES(memo),
+                military_except_yn = VALUES(military_except_yn),
+                disability = VALUES(disability),
+                height = VALUES(height),
+                weight = VALUES(weight),
+                foot_size = VALUES(foot_size),
+                sight_left = VALUES(sight_left),
+                sight_right = VALUES(sight_right),
+                blood_type = VALUES(blood_type),
+                blood_rh = VALUES(blood_rh),
+                military_state = VALUES(military_state),
+                military_type = VALUES(military_type),
+                military_rank = VALUES(military_rank),
+                military_specialty = VALUES(military_specialty),
+                military_no = VALUES(military_no),
+                discharge_gbn = VALUES(discharge_gbn),
+                military_fdate = VALUES(military_fdate),
+                military_tdate = VALUES(military_tdate),
+                military_except_reason = VALUES(military_except_reason),
+                disability_gbn = VALUES(disability_gbn),
+                disability_level = VALUES(disability_level),
+                modified_id = VALUES(modified_id),
+                modified_dt = now()
+     </insert>
+
+     <delete id="deleteEmployee">
+         DELETE FROM onedb.t_emp WHERE biz_id = #{bizId} and emp_no = #{empNo}
+     </delete>
+
+</mapper>

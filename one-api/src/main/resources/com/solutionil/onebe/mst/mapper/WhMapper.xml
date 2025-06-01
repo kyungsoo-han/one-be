@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.mst.mapper.WhMapper">
+
+    <insert id="insertWh">
+        INSERT INTO onedb.t_wh (
+            comp_id, biz_id, wh_cd, wh_nm, use_yn, memo, created_id, created_dt
+        ) VALUES
+
+        <foreach collection="child" item="item" index="i" separator=",">
+        (
+            #{compId}, #{bizId}, #{item.whCd}, #{item.whNm}, #{item.useYn}, #{item.memo}, #{userId}, now()
+        )
+        </foreach>
+        on duplicate key update
+        wh_cd = values(wh_cd),
+        wh_nm = values(wh_nm),
+        use_yn = values(use_yn),
+        memo = values(memo),
+        modified_id = #{userId},
+        modified_dt = now()
+    </insert>
+
+    <delete id="deleteWh">
+        DELETE FROM onedb.t_wh
+        WHERE wh_id = #{whId}
+    </delete>
+
+    <select id="findWhs" resultType="Wh">
+        SELECT wh_id, comp_id, biz_id, wh_cd, wh_nm, use_yn, memo
+        FROM onedb.t_wh
+        <where>
+            comp_id = #{compId}
+            and biz_id = #{bizId}
+            <if test="whCd != '' and whCd != null">
+                wh_cd like concat('%', #{whCd}, '%')
+            </if>
+            <if test="whNm != '' and whNm != null">
+                wh_nm like concat('%', #{whNm}, '%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

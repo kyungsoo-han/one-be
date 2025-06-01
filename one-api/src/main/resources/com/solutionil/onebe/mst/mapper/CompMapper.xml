@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.mst.mapper.CompMapper">
+
+    <!-- Insert Query -->
+    <insert id="saveComp" parameterType="CompRequest">
+
+        <selectKey keyProperty="compId" resultType="integer" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+
+
+        INSERT INTO onedb.t_comp (
+            comp_cd, comp_nm, comp_snm, comp_enm, corporation_no,
+            owner_nm, make_date, open_date, close_date, email,
+            tel_no, fax_no, zip_no, zip_addr1, zip_addr2, memo,
+            created_id, created_dt
+        ) VALUES (
+            #{compCd}, #{compNm}, #{compSnm}, #{compEnm}, #{corporationNo},
+            #{ownerNm}, #{makeDate}, #{openDate}, #{closeDate}, #{email},
+            #{telNo}, #{faxNo}, #{zipNo}, #{zipAddr1}, #{zipAddr2}, #{memo},
+            #{userId}, now()
+        )
+        ON DUPLICATE KEY UPDATE
+            comp_nm = VALUES(comp_nm),
+            comp_snm = VALUES(comp_snm),
+            comp_enm = VALUES(comp_enm),
+            corporation_no = VALUES(corporation_no),
+            owner_nm = VALUES(owner_nm),
+            make_date = VALUES(make_date),
+            open_date = VALUES(open_date),
+            close_date = VALUES(close_date),
+            email = VALUES(email),
+            tel_no = VALUES(tel_no),
+            fax_no = VALUES(fax_no),
+            zip_no = VALUES(zip_no),
+            zip_addr1 = VALUES(zip_addr1),
+            zip_addr2 = VALUES(zip_addr2),
+            memo = VALUES(memo),
+            modified_id = #{userId},
+            modified_dt = now();
+    </insert>
+
+    <update id="updateComp" parameterType="CompResponse">
+        UPDATE onedb.t_comp
+        SET
+            comp_cd = #{compCd},
+            comp_nm = #{compNm},
+            comp_snm = #{compSnm},
+            comp_enm = #{compEnm},
+            corporation_no = #{corporationNo},
+            owner_nm = #{ownerNm},
+            make_date = #{makeDate},
+            open_date = #{openDate},
+            close_date = #{closeDate},
+            email = #{email},
+            tel_no = #{telNo},
+            fax_no = #{faxNo},
+            zip_no = #{zipNo},
+            zip_addr1 = #{zipAddr1},
+            zip_addr2 = #{zipAddr2},
+            memo = #{memo},
+            modified_id = #{modifiedId},
+            modified_dt = #{modifiedDt}
+        WHERE comp_cd = #{compCd}
+    </update>
+
+    <delete id="deleteComp" parameterType="String">
+        DELETE FROM onedb.t_comp WHERE comp_cd = #{compCd}
+    </delete>
+
+    <select id="findCompById" parameterType="String" resultType="CompResponse">
+        SELECT
+            comp_id , comp_cd , comp_nm ,
+            comp_snm , comp_enm , corporation_no ,
+            owner_nm , make_date ,
+            open_date , close_date , email,
+            tel_no , fax_no , zip_no ,
+            zip_addr1 , zip_addr2 , memo
+        FROM onedb.t_comp
+        WHERE comp_cd = #{compCd}
+    </select>
+
+    <select id="findComps" resultType="MstCompGrid" parameterType="CompSrchRequest">
+        SELECT
+            comp_id , comp_cd, comp_nm ,corporation_no ,owner_nm
+        FROM onedb.t_comp
+        <where>
+            <if test="code != '' and code != null">
+                and comp_cd = #{compCd}
+            </if>
+            <if test="name != '' and name != null">
+                and comp_nm like concat('%',#{compNm},'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

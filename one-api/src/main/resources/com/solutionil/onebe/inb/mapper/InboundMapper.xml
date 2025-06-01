@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.inb.mapper.InboundMapper">
+
+    <select id="findMaxInboundLotNoByDate" resultType="String">
+        SELECT lot_no
+        FROM onedb.t_inbound
+        WHERE inbound_date = #{inboundDate}
+        ORDER BY lot_no DESC
+        LIMIT 1
+    </select>
+
+    <insert id="saveInbound" useGeneratedKeys="true" keyProperty="inboundId">
+
+        INSERT INTO onedb.t_inbound (
+            comp_id, biz_id, inbound_date, suppl_id, item_id, lot_no,
+            pallet_qty, box_qty, case_qty, ea_qty, total_qty, wh_id, zone_id, loc_id,
+            make_date, exp_date, status, putaway_status, memo, ref_date, ref_no, ref_seq,
+            created_id, created_dt
+        )
+        VALUES
+        (
+            #{compId}, #{bizId}, #{inboundDate},
+            COALESCE(#{supplId},0), #{itemId}, #{lotNo},
+            COALESCE(#{palletQty},0),COALESCE(#{boxQty},0), COALESCE(#{caseQty},0), COALESCE(#{eaQty},0), COALESCE(#{totalQty},0), #{whId}, #{zoneId}, #{locId},
+            COALESCE(#{makeDate},''), COALESCE(#{expDate},''), '00', '00', #{memo}, COALESCE(#{refDate},''), COALESCE(#{refNo},0), COALESCE(#{refSeq},0),
+            #{userId}, NOW()
+        )
+        ;
+
+        <if test="refNo != '' and refNo != null">
+            update onedb.t_inbound_req_item t1
+            set t1.inbound_status = '01'
+            where inbound_rerq_id = #{refNo} and seq_no = #{refSeq}
+        </if>
+
+    </insert>
+
+
+</mapper>

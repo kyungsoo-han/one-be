@@ -1,0 +1,3 @@
+rootProject.name = 'one-be'
+include 'one-api'
+

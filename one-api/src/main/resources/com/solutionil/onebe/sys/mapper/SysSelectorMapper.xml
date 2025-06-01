@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solutionil.onebe.sys.mapper.SysSelectorMapper">
+    
+    <sql id="SelectorCompWhere">
+            a.comp_id = #{compId}
+    </sql>
+
+    <sql id="SelectorBizWhere">
+        <if test="bizId != '' and bizId != null">
+            and a.biz_id = #{bizId}
+        </if>
+    </sql>
+
+    <select id="item" resultType="com.solutionil.onebe.sys.dto.response.SelectorDataResponse$Item">
+        /*SelectorDataResponse$Item*/
+        select a.item_id, a.item_cd, a.item_nm, a.standard,cm.comm_nm as itemUnitNm, cm2.comm_nm as itemTypeNm,
+               a.box_unit_qty,  a.pallet_unit_qty
+        from onedb.t_item a
+                 join onedb.t_sys_commcode cm on a.item_unit_cd = cm.comm_cd and cm.comm_gbn = 'itemUnit'
+                 join onedb.t_sys_commcode cm2 on a.item_type_cd = cm2.comm_cd and cm2.comm_gbn = 'itemType'
+            <where>
+            <include refid="SelectorCompWhere"/>
+            <if test="searchText != '' and searchText != null">
+                and (a.item_cd like CONCAT('%', #{searchText}, '%') or (a.item_nm like CONCAT('%', #{searchText}, '%')))
+            </if>
+            </where>
+        ;
+    </select>
+
+
+    <select id="biz" resultType="com.solutionil.onebe.sys.dto.response.SelectorDataResponse$Biz">
+        /*SelectorDataResponse$Biz*/
+        select a.comp_id, b.comp_nm,a.biz_id, a.biz_cd, a.biz_nm, a.owner_nm, a.biz_no
+        from onedb.t_biz a
+                 inner join onedb.t_comp b on a.comp_id = b.comp_id
+        <where>
+            <include refid="SelectorCompWhere"/>
+        </where>
+    </select>
+
+    <select id="comp" resultType="com.solutionil.onebe.sys.dto.response.SelectorDataResponse$Comp">
+        /*SelectorDataResponse$Comp*/
+        select a.comp_id, a.comp_cd, a.comp_nm,a.owner_nm
+        from onedb.t_comp as a
+        /*where a.comp_id = #{compId}*/
+    </select>
+
+    <select id="dept" resultType="com.solutionil.onebe.sys.dto.response.SelectorDataResponse$Dept">
+    /*SelectorDataResponse$dept*/
+        select dept_id, a.biz_id, tb.biz_nm,dept_cd, dept_nm
+        from onedb.t_dept a
+           join onedb.t_biz tb on a.biz_id = tb.biz_id
+        <where>
+            <include refid="SelectorCompWhere"/>
+            <include refid="SelectorBizWhere"/>
+        </where>
+    </select>
+
+    <select id="emp" resultType="com.solutionil.onebe.sys.dto.response.SelectorDataResponse$Emp">
+    /*SelectorDataResponse$emp*/
+        select a.emp_id, a.emp_no, a.emp_nm, a.dept_id,td.dept_nm, a.biz_id, tb.biz_nm
+        from onedb.t_emp a
+           join onedb.t_dept td on a.dept_id = td.dept_id
+            join onedb.t_biz tb on a.biz_id = tb.biz_id
+        <where>
+            <include refid="SelectorCompWhere"/>
+            <include refid="SelectorBizWhere"/>
+        <if test="searchText != '' and searchText != null">
+            and (a.emp_nm like CONCAT('%', #{searchText}, '%') or (a.emp_no like CONCAT('%', #{searchText}, '%')))
+        </if>
+        </where>
+    </select>
+
+    <select id="wh" resultType="com.solutionil.onebe.sys.dto.response.SelectorDataResponse$Wh">
+    /*SelectorDataResponse$Warehouse*/
+        select wh_id, a.biz_id, tb.biz_nm, wh_cd, wh_nm
+        from onedb.t_wh a
+           join onedb.t_biz tb on a.biz_id = tb.biz_id
+        <where>
+            <include refid="SelectorCompWhere"/>
+            <include refid="SelectorBizWhere"/>
+        </where>
+        ;
+    </select>
+
+    <select id="zone" resultType="com.solutionil.onebe.sys.dto.response.SelectorDataResponse$Zone">
+    /*SelectorDataResponse$Zone*/
+        select a.wh_id, a.biz_id, tb.wh_nm, a.zone_id, a.zone_cd, a.zone_nm,
+               cm.comm_nm as zoneType , cm2.comm_nm as storageType, a.stage_yn
+        from onedb.t_zone a
+                 join onedb.t_wh tb on a.wh_id = tb.wh_id
+                 join onedb.t_sys_commcode cm on a.zone_type_cd = cm.comm_cd and cm.comm_gbn = 'zoneType'
+                 join onedb.t_sys_commcode cm2 on a.storage_type_cd = cm2.comm_cd and cm2.comm_gbn = 'storageType'
+        <where>
+            <include refid="SelectorCompWhere"/>
+            <include refid="SelectorBizWhere"/>
+            <if test="whId != '' and whId != null">
+                and a.wh_id = #{whId}
+            </if>
+        </where>;
+    </select>
+
+    <select id="cust" resultType="com.solutionil.onebe.sys.dto.response.SelectorDataResponse$Cust">
+        /*SelectorDataResponse$Customer*/
+        select     cust_id, cust_cd, cust_nm, biz_type, biz_item,  owner_nm
+        from onedb.t_cust as a
+        <where>
+            <include refid="SelectorCompWhere"/>
+        </where>;
+    </select>
+    <select id="custDeliv" resultType="com.solutionil.onebe.sys.dto.response.SelectorDataResponse$CustDeliv">
+    /*SelectorDataResponse$CustomerDelivery*/
+        select a.deliv_id, a.deliv_cd, a.deliv_nm, b.cust_id, b.cust_nm
+        from onedb.t_cust_deliv as a
+                 inner join onedb.t_cust as b on a.cust_id = b.cust_id
+        <where>
+            <include refid="SelectorCompWhere"/>
+            and a.cust_id = #{custId}
+            <if test="searchText != '' and searchText != null">
+                and (a.deliv_id like CONCAT('%', #{searchText}, '%') or (a.deliv_nm like CONCAT('%', #{searchText}, '%')))
+            </if>
+        </where>;
+    </select>
+    <insert id="saveSelectorMain">
+        insert into onedb.t_sys_selector_main
+            (selector_gbn, selector_nm, remark,  created_id, created_dt)
+        values
+        <foreach collection="child" item="item" index="i" separator=",">
+            (
+                #{item.selectorGbn}, #{item.selectorNm}, #{item.remark}, #{userId}, NOW()
+            )
+            </foreach>
+            ON DUPLICATE KEY UPDATE
+                remark = VALUES(remark),
+                modified_id = #{userId},
+                modified_dt = NOW();
+    </insert>
+
+    <insert id="saveSelectorDetail">
+        INSERT INTO onedb.t_sys_selector_detail (
+            selector_gbn, field_nm, seq_no, title, width, hidden_yn, align, display_yn, value_yn, field_yn, remark, created_id, created_dt
+        ) VALUES
+        <foreach collection="child" item="item" index="i" separator=",">
+            (
+                #{selectorGbn}, #{item.fieldNm}, #{item.seqNo}, #{item.title}, #{item.width}, #{item.hiddenYn}, #{item.align}, #{item.displayYn}, #{item.valueYn}, #{item.fieldYn},
+                #{item.remark}, #{userId}, NOW()
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+            seq_no = VALUES(seq_no),
+            title = VALUES(title),
+            width = VALUES(width),
+            hidden_yn = VALUES(hidden_yn),
+            align = VALUES(align),
+            display_yn = VALUES(display_yn),
+            value_yn = VALUES(value_yn),
+            field_yn = VALUES(field_yn),
+            remark = VALUES(remark),
+            modified_id = #{userId},
+            modified_dt = NOW();
+    </insert>
+
+    <delete id="deleteSysSelectorMain">
+        delete from onedb.t_sys_selector_main where selector_gbn = #{selectorGbn}
+    </delete>
+
+    <delete id="deleteSysSelectorDetail">
+        delete from onedb.t_sys_selector_detail where selector_gbn = #{selectorGbn} and field_nm = #{fieldNm}
+    </delete>
+
+    <select id="selectSysSelectorMainList" resultType="SysSelectorMainGrid">
+        select selector_gbn, selector_nm, use_yn, remark
+       from onedb.t_sys_selector_main
+       <where>
+           <if test="selectorGbn != '' and selectorGbn != null">
+               and selector_gbn like concat('%',#{selectorGbn}, '%')
+           </if>
+           <if test="selectorNm != '' and selectorNm != null">
+               and selector_nm like concat('%',#{selectorNm}, '%')
+           </if>
+       </where>
+    </select>
+
+    <select id="selectSysSelectorDetailList" resultType="SysSelectorDetailGrid">
+
+        SELECT
+                d.field_nm,
+               d.seq_no,
+               d.title,
+               d.width,
+               d.hidden_yn,
+               d.align,
+               d.display_yn,
+               d.value_yn,
+               d.field_yn,
+               d.remark
+        FROM onedb.t_sys_selector_detail d
+        WHERE d.selector_gbn = #{selectorGbn}
+        ORDER BY  d.seq_no
+    </select>
+
+    <select id="getSelectorHeader" resultType="SysSelectorHeader">
+
+        SELECT m.selector_gbn,
+               d.seq_no,
+               d.title,
+               d.field_nm,
+               d.width,
+               d.hidden_yn,
+               d.align,
+               d.display_yn,
+               d.value_yn,
+               d.field_yn
+        FROM onedb.t_sys_selector_main m
+                 INNER JOIN onedb.t_sys_selector_detail d on m.selector_gbn = d.selector_gbn
+        ORDER BY m.selector_gbn, d.seq_no
+    </select>
+
+    <select id="menu" resultType="com.solutionil.onebe.sys.dto.response.SelectorDataResponse$Menu">
+        WITH RECURSIVE MenuHierarchy AS (
+                       SELECT
+                           menu_id,
+                           parent_id,
+                           menu_path,
+                           menu_nm,
+                           menu_lvl,
+                           seq,
+                           CAST(CONCAT( LPAD(seq, 3, '0'),LPAD(menu_id, 5, '0'))  AS CHAR(500)) AS path,
+                           1 AS depth,
+                           SUBSTRING(MENU_PATH, LOCATE('.', MENU_PATH, LOCATE('#', MENU_PATH, 1)) + 1,LENGTH(MENU_PATH)) AS CLASS_ID,
+                           use_yn
+                       FROM
+                           onedb.t_sys_menu
+                       WHERE
+                           parent_id = 0
+                       UNION ALL
+                       SELECT
+                           t.menu_id,
+                           t.parent_id,
+                           t.menu_path,
+                           t.menu_nm,
+                           t.menu_lvl,
+                           t.seq,
+                           -- 경로의 길이를 제한합니다
+                           CONCAT(mh.path, '/', LPAD(t.seq, 3, '0')) as path,
+                           mh.depth + 1 as depth,
+                          SUBSTRING(t.MENU_PATH, LOCATE('.', t.MENU_PATH, LOCATE('#', t.MENU_PATH, 1)) + 1,LENGTH(t.MENU_PATH)) AS CLASS_ID,
+                          t.use_yn
+
+                       FROM
+                           onedb.t_sys_menu t
+                       JOIN
+                           MenuHierarchy mh ON t.parent_id = mh.menu_id and ifnull(t.menu_path,'') != ''
+                      <where>
+                          <if test="searchText != '' and searchText != null">
+                              and t.menu_nm like CONCAT('%', #{searchText}, '%')
+                          </if>
+                       </where>
+                   )
+                   SELECT
+                       mh.path,
+                       mh.menu_id,
+                       mh.menu_path,
+                       mh.class_id,
+                       mh.menu_nm,
+                        mh.menu_lvl,
+                        mh.seq,
+                        mh.depth
+                   FROM
+                       MenuHierarchy mh
+                   WHERE ifnull(mh.menu_path,'') != '' and use_yn = 'Y'
+                   ORDER BY
+                       mh.path;
+
+
+    </select>
+
+
+
+</mapper>
+
+    

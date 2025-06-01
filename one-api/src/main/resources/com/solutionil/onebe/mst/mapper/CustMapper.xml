@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.mst.mapper.CustMapper">
+
+    <insert id="insertCust">
+
+        INSERT INTO onedb.t_cust (
+                comp_id, cust_id, cust_cd, cust_nm, cust_snm, cust_enm, trade_yn,
+                biz_no, biz_type, biz_item, nation_cd, owner_nm, make_date, cust_gbn_cd,
+                open_date, close_date, email, tel_no, fax_no, emp_nm, emp_phone_no, emp_email,
+                zip_no, zip_addr1, zip_addr2, homepage, trade_start_date, trade_end_date, memo,
+                created_id, created_dt
+            ) VALUES (
+                #{compId},#{custId}, #{custCd}, #{custNm}, #{custSnm}, #{custEnm}, #{tradeYn},
+                #{bizNo}, #{bizType}, #{bizItem}, #{nationCd}, #{ownerNm}, #{makeDate}, #{custGbnCd},
+                #{openDate}, #{closeDate}, #{email}, #{telNo}, #{faxNo}, #{empNm}, #{empPhoneNo}, #{empEmail},
+                #{zipNo}, #{zipAddr1}, #{zipAddr2}, #{homepage}, #{tradeStartDate}, #{tradeEndDate}, #{memo},
+                #{userId}, NOW()
+            )
+            ON DUPLICATE KEY UPDATE
+                cust_nm = VALUES(cust_nm),
+                cust_snm = VALUES(cust_snm),
+                cust_enm = VALUES(cust_enm),
+                trade_yn = VALUES(trade_yn),
+                biz_no = VALUES(biz_no),
+                biz_type = VALUES(biz_type),
+                biz_item = VALUES(biz_item),
+                nation_cd = VALUES(nation_cd),
+                cust_gbn_cd = VALUES(cust_gbn_cd),
+                owner_nm = VALUES(owner_nm),
+                make_date = VALUES(make_date),
+                open_date = VALUES(open_date),
+                close_date = VALUES(close_date),
+                email = VALUES(email),
+                tel_no = VALUES(tel_no),
+                fax_no = VALUES(fax_no),
+                emp_nm = VALUES(emp_nm),
+                emp_phone_no = VALUES(emp_phone_no),
+                emp_email = VALUES(emp_email),
+                zip_no = VALUES(zip_no),
+                zip_addr1 = VALUES(zip_addr1),
+                zip_addr2 = VALUES(zip_addr2),
+                homepage = VALUES(homepage),
+                trade_start_date = VALUES(trade_start_date),
+                trade_end_date = VALUES(trade_end_date),
+                memo = VALUES(memo),
+                modified_id = #{userId},
+                modified_dt = NOW();
+    </insert>
+
+    <update id="updateCust">
+        UPDATE onedb.t_cust
+        SET
+            cust_nm = #{custNm},
+            cust_snm = #{custSnm},
+            cust_enm = #{custEnm},
+            trade_yn = #{tradeYn},
+            biz_no = #{bizNo},
+            biz_type = #{bizType},
+            biz_item = #{bizItem},
+            nation_cd = #{nationCd},
+            owner_nm = #{ownerNm},
+            make_date = #{makeDate},
+            open_date = #{openDate},
+            close_date = #{closeDate},
+            email = #{email},
+            tel_no = #{telNo},
+            fax_no = #{faxNo},
+            emp_nm = #{empNm},
+            emp_phone_no = #{empPhoneNo},
+            emp_email = #{empEmail},
+            zip_no = #{zipNo},
+            zip_addr1 = #{zipAddr},
+            zip_addr2 = #{zipAddr2},
+            homepage = #{homepage},
+            trade_start_date = #{tradeStartDate},
+            trade_end_date = #{tradeEndDate},
+            memo = #{memo},
+            modified_id = #{userId},
+            modified_dt = now()
+        WHERE cust_id = #{custId}
+    </update>
+
+    <delete id="deleteCust">
+        DELETE FROM onedb.t_cust
+        WHERE cust_id = #{custId}
+    </delete>
+
+    <select id="findCustById" resultType="CustResponse">
+        SELECT comp_id, cust_id, cust_cd, cust_nm, cust_snm, cust_enm, trade_yn, biz_no, biz_type, biz_item, nation_cd,
+               owner_nm, make_date, open_date, close_date, email, tel_no, fax_no,cust_gbn_cd,
+               emp_nm, emp_phone_no, emp_email, zip_no, zip_addr1, zip_addr2, homepage,
+               trade_start_date, trade_end_date, memo
+        FROM onedb.t_cust
+        WHERE cust_id = #{custId}
+    </select>
+
+    <select id="findCusts" resultType="CustResponse">
+        SELECT comp_id, cust_id, cust_cd, cust_nm, cust_snm, cust_enm, trade_yn, biz_no, biz_type, biz_item, nation_cd,
+               owner_nm, make_date, open_date, close_date, email, tel_no, fax_no,cust_gbn_cd,
+               emp_nm, emp_phone_no, emp_email, zip_no, zip_addr1, zip_addr2, homepage,
+               trade_start_date, trade_end_date, memo
+        FROM onedb.t_cust
+        <where>
+            comp_id = #{compId}
+            <if test="code != '' and code != null">
+                and cust_cd = #{code}
+            </if>
+            <if test="name != '' and name != null">
+                and cust_nm like concat('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

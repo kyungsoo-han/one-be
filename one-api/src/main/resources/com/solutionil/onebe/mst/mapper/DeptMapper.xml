@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solutionil.onebe.mst.mapper.DeptMapper">
+
+    <insert id="saveDept" parameterType="com.solutionil.onebe.mst.dto.request.DeptRequest">
+        INSERT INTO onedb.t_dept (comp_id, biz_id, dept_cd, dept_nm, parent_id, dept_type, dept_gbn, use_yn, seq, tel_no, fax_no, remark, created_id, created_dt, modified_id, modified_dt)
+        VALUES (#{compId}, #{bizId}, #{deptCd}, #{deptNm}, #{parentId}, #{deptType}, #{deptGbn}, #{useYn}, #{seq}, #{telNo}, #{faxNo}, #{remark}, #{userId}, NOW(), #{userId}, NOW())
+        ON DUPLICATE KEY UPDATE
+            dept_nm = #{deptNm},
+            parent_id = #{parentId},
+            dept_type = #{deptType},
+            dept_gbn = #{deptGbn},
+            use_yn = #{useYn},
+            seq = #{seq},
+            tel_no = #{telNo},
+            fax_no = #{faxNo},
+            remark = #{remark},
+            modified_id = #{userId},
+            modified_dt = NOW();
+    </insert>
+
+
+    <!-- Find (Select by DeptId) -->
+    <select id="findDeptById" resultType="com.solutionil.onebe.mst.dto.response.DeptResponse" parameterType="int">
+        SELECT comp_id, biz_id, dept_id, dept_cd, dept_nm, parent_id, dept_type, dept_gbn, use_yn, seq, tel_no, fax_no, remark
+        FROM onedb.t_dept
+        WHERE dept_id = #{deptId}
+    </select>
+
+    <!-- Delete -->
+
+    <select id="getDeleteTarget" parameterType="int">
+            WITH RECURSIVE deleteTarget AS (
+                SELECT dept_id
+                FROM onedb.t_dept
+                WHERE dept_id = #{deptId}
+
+                UNION ALL
+
+                SELECT child.dept_id
+                FROM onedb.t_dept AS child
+                JOIN deleteTarget AS parent ON child.parent_id = parent.dept_id
+            )
+            SELECT dept_id FROM deleteTarget;
+
+    </select>
+    <delete id="deleteDept" parameterType="int">
+
+            DELETE FROM onedb.t_dept
+            WHERE dept_id = #{deptId};
+
+    </delete>
+
+    <select id="findDepts" resultType="com.solutionil.onebe.mst.dto.response.DeptResponse">
+        SELECT comp_id, biz_id, dept_id, dept_cd, dept_nm, parent_id, dept_type, dept_gbn, use_yn, seq, tel_no, fax_no, remark
+        FROM t_dept
+        <where>
+                comp_id = #{compId}
+            <if test="code!= '' and code !=null">
+                and dept_cd  like concat('%', #{code}, '%')
+            </if>
+            <if test="name!= '' and name !=null">
+                and dept_nm like concat('%', #{name}, '%')
+            </if>
+        </where>
+        ORDER BY dept_id
+    </select>
+
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.oub.mapper.OutboundReqApprMapper">
+
+    <!-- 출고등록(요청별) -->
+    <select id="findOutboundReqApprMainGrid" resultType="OutboundReqApprMainGrid">
+        SELECT 'N' chk, outbound_req_id, req_date, cm.comm_nm as oubType, cm2.comm_nm as oubClass, s.cust_nm, exp_outbound_date, po.memo, po.appr_memo
+        FROM onedb.t_outbound_req po
+             inner join onedb.t_cust s on po.cust_id = s.cust_id
+             left join onedb.t_sys_commcode cm on po.oub_type_cd = cm.comm_cd and cm.comm_gbn = 'oubType'
+            left join onedb.t_sys_commcode cm2 on po.oub_class_cd = cm2.comm_cd and cm2.comm_gbn = 'oubClass'
+        <where>
+            po.biz_id = #{bizId}
+            and po.req_date between #{fDate} and #{tDate}
+            and po.status = '00'
+            <if test="custId !='' and custId != null">
+                and po.cust_id = #{custId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 출고등록(요청별) -->
+    <select id="findOutboundReqApprDetailGrid" resultType="OutboundReqItemResponse">
+        SELECT seq_no, ti.item_nm, price_amt, req_qty,  tiri.memo
+        FROM onedb.t_outbound_req_item as tiri
+        left outer join onedb.t_item ti on ti.item_id =  tiri.item_id
+        WHERE outbound_req_id = #{outboundReqId}
+    </select>
+
+    <update id="updateOutboundReqStatus" >
+        <foreach collection="outboundReqIds" item ="i" separator=";">
+        update onedb.t_outbound_req
+        set
+            status = '01',
+            appr_memo = #{i.apprMemo},
+            appr_dt = now(),
+            appr_user_id = #{userId}
+        where outbound_req_id = #{i.outboundReqId}
+        </foreach>
+    </update>
+
+</mapper>

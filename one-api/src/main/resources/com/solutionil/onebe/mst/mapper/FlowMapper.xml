@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.mst.mapper.FlowMapper">
+
+    <select id="SelectFlowMainGrid" resultType="FlowMainGrid">
+        SELECT 	A.FLOW_CD,
+                A.FLOW_NM,
+                B.comm_nm
+          FROM 	t_flow_mst A
+          JOIN 	t_sys_commcode B ON B.comm_gbn = 'flowGrp' AND A.flow_grp = B.comm_cd
+         WHERE	A.comp_id = #{compId}
+           AND 	A.fac_id  = #{facId}
+        <if test="flowCd !='' and flowCd != null">
+           AND 	CONCAT(A.flow_cd, ' ', A.flow_nm) LIKE #{flowCd}
+        </if>
+        <if test="flowGrp !='' and flowGrp != null">
+           AND 	A.flow_grp = #{flowCd}
+        </if>
+        ;
+    </select>
+
+    <select id="SelectFlowDetailControl" resultType="FlowResponse">
+        SELECT 	A.FLOW_CD,
+                A.FLOW_NM,
+                A.FLOW_GRP,
+                A.REMARK
+          FROM 	t_flow_mst A
+         WHERE	A.comp_id = #{compId}
+           AND 	A.fac_id  = #{facId}
+           AND 	A.flow_cd = #{flowCd}
+        ;
+    </select>
+
+    <select id="SelectDuplicateFlowCd" resultType="int">
+
+        SELECT COUNT(*) AS DUP_CNT
+          FROM t_flow_mst
+         WHERE comp_id = #{compId}
+           AND fac_id = #{facId}
+           AND flow_cd = #{flowCd}
+
+    </select>
+
+    <insert id="InsertFlowMst" >
+
+        INSERT INTO onedb.t_flow_mst (
+            comp_id,        fac_id,     flow_cd,        flow_nm,        flow_grp,
+            remark,         sys_memo,   create_id,      create_time
+        ) VALUES (
+            #{compId},      #{facId},   #{flowCd},      #{flowNm},      #{flowGrp},
+            #{remark},      ' ',        #{userId},      NOW()
+        );
+
+    </insert>
+
+    <update id="UpdateFlowMst" >
+
+        UPDATE onedb.t_flow_mst
+           set flow_nm   =   #{flowNm},
+               flow_grp  =   #{flowGrp},
+               remark    =   #{remark},
+               update_id =   #{userId},
+               update_time = NOW()
+         WHERE comp_id  =   #{compId}
+           AND fac_id   =   #{facId}
+           AND flow_cd  =   #{flowCd}
+        ;
+
+    </update>
+
+</mapper>
+

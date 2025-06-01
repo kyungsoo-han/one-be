@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.mst.mapper.ProdProcessMapper">
+
+    <insert id="insertProdProcess">
+        INSERT INTO onedb.t_prod_process (
+            comp_id, fac_id, prod_line_id, prod_process_cd, prod_process_nm, use_yn, memo,
+            wh_id, zone_id, loc_id, created_id, created_dt
+        ) VALUES (
+            #{compId}, #{facId}, #{prodLineId}, #{prodProcessCd}, #{prodProcessNm}, #{useYn}, #{memo},
+            #{whId}, #{zoneId}, #{locId}, #{userId}, now()
+        )
+    </insert>
+
+    <update id="updateProdProcess">
+        UPDATE onedb.t_prod_process
+        SET
+            fac_id = #{facId},
+            prod_line_id = #{prodLineId},
+            prod_process_cd = #{prodProcessCd},
+            prod_process_nm = #{prodProcessNm},
+            use_yn = #{useYn},
+            memo = #{memo},
+            wh_id = #{whId},
+            zone_id = #{zoneId},
+            loc_id = #{locId},
+            modified_id = #{userId},
+            modified_dt = now()
+        WHERE prod_process_id = #{prodProcessId}
+    </update>
+
+    <delete id="deleteProdProcess">
+        DELETE FROM onedb.t_prod_process
+        WHERE prod_process_id = #{prodProcessId}
+    </delete>
+
+    <select id="selectProdProcessById" resultType="ProdProcess">
+        SELECT prod_process_id, comp_id, fac_id, prod_line_id, prod_process_cd, prod_process_nm, use_yn, memo,
+               wh_id, zone_id, loc_id
+        FROM onedb.t_prod_process
+        WHERE prod_process_id = #{prodProcessId}
+    </select>
+
+    <select id="selectAllProdProcesss" resultType="ProdProcess">
+        SELECT prod_process_id, comp_id, fac_id, prod_line_id, prod_process_cd, prod_process_nm, use_yn, memo,
+               wh_id, zone_id, loc_id
+        FROM onedb.t_prod_process
+    </select>
+
+</mapper>

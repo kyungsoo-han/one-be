@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.sys.mapper.SysGridMapper">
+
+    <insert id="insertSysGridMain">
+            INSERT INTO onedb.t_sys_grid_main (
+                menu_id, grid_nm, grid_gbn, purpose, available_add_row, remark, created_id, created_dt
+            ) VALUES
+            <foreach collection="child" item="item" index="i" separator=",">
+                (
+                    #{item.menuId}, #{item.gridNm},  #{item.gridGbn}, #{item.purpose}, #{item.availableAddRow}, #{item.remark}, #{userId}, NOW()
+                )
+            </foreach>
+            ON DUPLICATE KEY UPDATE
+                grid_gbn = VALUES(grid_gbn),
+                purpose = VALUES(purpose),
+                available_add_row = VALUES(available_add_row),
+                remark = VALUES(remark),
+                modified_id = #{userId},
+                modified_dt = NOW();
+
+    </insert>
+    <insert id="insertSysGridDetail">
+
+        INSERT INTO onedb.t_sys_grid_detail (
+                menu_id, grid_nm, column_id, band, title, seq, width, type, type_gbn,
+                field_nm, res_nm, align, key_yn, readonly_yn, hidden_yn, decimal_pt, max_length,
+                mandatory_yn, sort_yn, filter_yn, group_yn, fix_yn, sum_yn, cannot_modify_yn,
+                etc1, etc2, etc3, etc4, created_id, created_dt
+            ) VALUES
+            <foreach collection="child" item="item" index="i" separator=",">
+                (
+                    #{menuId}, #{gridNm}, #{item.columnId}, #{item.band}, #{item.title}, #{item.seq}, #{item.width}, #{item.type}, #{item.typeGbn},
+                    #{item.fieldNm}, #{item.resNm}, #{item.align}, #{item.keyYn}, #{item.readonlyYn}, #{item.hiddenYn}, #{item.decimalPt},COALESCE(#{item.maxLength},0),
+                    #{item.mandatoryYn}, #{item.sortYn}, #{item.filterYn}, #{item.groupYn}, #{item.fixYn}, #{item.sumYn},#{item.cannotModifyYn},
+                    #{item.etc1}, #{item.etc2}, #{item.etc3}, #{item.etc4}, #{userId}, NOW()
+                )
+            </foreach>
+            ON DUPLICATE KEY UPDATE
+                band = VALUES(band),
+                title = VALUES(title),
+                seq = VALUES(seq),
+                width = VALUES(width),
+                type = VALUES(type),
+                type_gbn = VALUES(type_gbn),
+                field_nm = VALUES(field_nm),
+                max_length = values(max_length),
+                res_nm = VALUES(res_nm),
+                align = VALUES(align),
+                key_yn = VALUES(key_yn),
+                cannot_modify_yn = VALUES(cannot_modify_yn),
+                readonly_yn = VALUES(readonly_yn),
+                hidden_yn = VALUES(hidden_yn),
+                decimal_pt = VALUES(decimal_pt),
+                mandatory_yn = VALUES(mandatory_yn),
+                sort_yn = VALUES(sort_yn),
+                filter_yn = VALUES(filter_yn),
+                group_yn = VALUES(group_yn),
+                fix_yn = VALUES(fix_yn),
+                sum_yn = VALUES(sum_yn),
+                etc1 = VALUES(etc1),
+                etc2 = VALUES(etc2),
+                etc3 = VALUES(etc3),
+                etc4 = VALUES(etc4),
+                modified_id = #{userId},
+                modified_dt = NOW();
+        </insert>
+
+    <update id="updateSysGridMain">
+        UPDATE onedb.t_sys_grid_main
+        SET
+            grid_gbn = #{gridGbn},
+            purpose = #{purpose},
+            remark = #{remark},
+            modified_id = #{modifyId},
+            modified_dt = NOW()
+        WHERE menu_id = #{menuId} AND grid_nm = #{gridNm}
+    </update>
+    <update id="updateGridColsWidth">
+        <foreach collection="request" item="item" index="i" separator=";">
+            update onedb.t_sys_grid_detail
+            set width = #{item.width}
+            where column_id = #{item.columnId}
+        </foreach>
+    </update>
+    <delete id="deleteSysGridMain">
+
+        DELETE FROM onedb.t_sys_grid_detail
+        WHERE menu_id = #{menuId} AND grid_nm = #{gridNm};
+
+        DELETE FROM onedb.t_sys_grid_main
+        WHERE menu_id = #{menuId} AND grid_nm = #{gridNm};
+    </delete>
+
+    <delete id="deleteSysGridDetail">
+        DELETE FROM onedb.t_sys_grid_detail
+        WHERE column_id = #{columnId}
+    </delete>
+
+    <select id="selectSysGridMain" resultType="SysGridMainResponse">
+        WITH RECURSIVE MenuHierarchy AS (
+            SELECT
+                menu_id,
+                parent_id,
+                menu_nm,
+                menu_lvl,
+                seq,
+                CAST(CONCAT( LPAD(seq, 3, '0'),LPAD(menu_id, 5, '0'))  AS CHAR(500)) AS path,
+                1 AS depth
+            FROM
+                onedb.t_sys_menu
+            WHERE
+                parent_id = 0
+            UNION ALL
+            SELECT
+                t.menu_id,
+                t.parent_id,
+                t.menu_nm,
+                t.menu_lvl,
+                t.seq,
+                -- 경로의 길이를 제한합니다
+                CONCAT(mh.path, '/', LPAD(t.seq, 3, '0')),
+                mh.depth + 1
+            FROM
+                onedb.t_sys_menu t
+            JOIN
+                MenuHierarchy mh ON t.parent_id = mh.menu_id
+           <where>
+                <if test="menuNm != '' and menuNm != null">
+                    tsm.menu_nm like concat('%', #{menuNm}, '%')
+                </if>
+                <if test="gridNm != '' and gridNm != null">
+                    grid_nm like concat('%', #{gridNm}, '%')
+                </if>
+            </where>
+        )
+        SELECT
+            mh.path,
+            tsgm.menu_id,
+            mh.menu_nm,
+            tsgm.grid_nm,
+            tsgm.grid_gbn,
+            tsgm.purpose,
+            tsm.menu_lvl,
+            tsm.seq,
+            IFNULL(tsgm.available_add_row, 'N') AS available_add_row,
+            tsgm.remark
+        FROM
+            MenuHierarchy mh
+        JOIN
+            onedb.t_sys_grid_main tsgm ON mh.menu_id = tsgm.menu_id
+        JOIN
+            onedb.t_sys_menu tsm ON mh.menu_id = tsm.menu_id
+        ORDER BY
+            mh.path;
+
+    </select>
+
+    <select id ="selectSysGridDetail" resultType="SysGridDetailResponse">
+        /*selectSysGridDetail*/
+        SELECT DISTINCT 'N' CHK,
+        					A.COLUMN_ID,
+        					 A.TITLE,
+        					 A.BAND,
+        					 A.SEQ,
+        					 A.WIDTH,
+        					 A.`TYPE` ,
+        					 A.TYPE_GBN ,
+        					 A.FIELD_NM,
+        					 A.RES_NM,
+        					 A.ALIGN,
+        					 A.KEY_YN,
+        					 A.max_length,
+        					 A.cannot_modify_yn,
+        					 A.READONLY_YN,
+        					 A.HIDDEN_YN,
+        					 A.DECIMAL_PT,
+        					 A.MANDATORY_YN,
+        					 A.SORT_YN,
+        					 A.FILTER_YN,
+        					 A.GROUP_YN,
+        					 A.FIX_YN,
+        					 A.SUM_YN,
+                   A.ETC1, A.ETC2, A.ETC3, A.ETC4
+        		FROM onedb.t_sys_grid_detail A
+            WHERE A.menu_id = #{menuId} AND A.GRID_NM = #{gridNm}
+            ORDER BY A.SEQ
+    </select>
+
+    <select id="selectGridColumnInfo" resultType="GridColumnInfoResponse">
+        /*
+            /api/v1/sys-grid/setGridColumnInfo
+         */
+        SELECT
+       				 sy.grid_nm,
+       				 sy1.column_id,
+       				 sy.grid_gbn,
+       				 sy.purpose,
+       				 ifnull(sy.available_add_row, 'N') as available_add_row,
+       				 sy1.title,
+       				 sy1.band,
+       				 sy1.seq,
+       				 sy1.width,
+       				 sy1.type,
+       				 sy1.type_gbn,
+       				 sy1.field_nm ,
+       				 sy1.max_length,
+       				 sy1.res_nm,
+       				 sy1.align,
+       				 sy1.key_yn,
+                    sy1.cannot_modify_yn,
+       				 sy1.readonly_yn,
+       				 sy1.hidden_yn,
+       				 IFNULL(sy1.decimal_pt,0) as decimal_pt,
+       				 sy1.mandatory_yn,
+       				 sy1.sort_yn,
+       				 sy1.filter_yn,
+       				 sy1.group_yn,
+       				 sy1.fix_yn,
+       				 sy1.sum_yn,
+       			sy1.etc1, sy1.etc2, sy1.etc3, sy1.etc4
+       	FROM onedb.t_sys_grid_detail sy1  LEFT JOIN onedb.t_sys_grid_main sy ON sy.menu_id = sy1.menu_id and sy.grid_nm = sy1.grid_nm
+       	WHERE sy.menu_id = #{menuId} AND sy.grid_nm = #{gridNm}
+       	Order by sy1.seq
+    </select>
+
+</mapper>

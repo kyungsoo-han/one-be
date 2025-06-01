@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.inb.mapper.InboundReqMapper">
+
+    <insert id="insertInboundReq">
+        <selectKey keyProperty="inboundReqId" resultType="long" order="AFTER">
+          SELECT IF(#{inboundReqId} IS NOT NULL AND #{inboundReqId} != 0, #{inboundReqId}, LAST_INSERT_ID())
+        </selectKey>
+
+        INSERT INTO onedb.t_inbound_req (
+            inbound_req_id, req_date, comp_id, biz_id, po_no, status, exp_deliv_date, suppl_id,
+            inb_type_cd, inb_class_cd, memo, created_id, created_dt
+        ) VALUES
+        (
+            #{inboundReqId},#{reqDate}, #{compId}, #{bizId}, #{poNo}, '00', #{expDelivDate}, #{supplId},
+            #{inbTypeCd}, #{inbClassCd}, #{memo},  #{userId}, now()
+        )
+        on duplicate key update
+        po_no = values(po_no),
+        exp_deliv_date = values(exp_deliv_date),
+        suppl_id = values(suppl_id),
+        inb_type_cd = values(inb_type_cd),
+        inb_class_cd = values(inb_class_cd),
+        memo = values(memo),
+        modified_id = #{userId},
+        modified_dt = now()
+    </insert>
+
+    <update id="updateInboundReq">
+        UPDATE onedb.t_inbound_req
+        SET
+            req_date = #{reqDate},
+            comp_id = #{compId},
+            biz_id = #{bizId},
+            po_no = #{poNo},
+            status = #{status},
+            exp_deliv_date = #{expDelivDate},
+            suppl_id = #{supplId},
+            inb_type_cd = #{inbTypeCd},
+            inb_class_cd = #{inbClassCd},
+            memo = #{memo}
+        WHERE inbound_req_id = #{inboundReqId}
+    </update>
+
+    <delete id="deleteInboundReq">
+        DELETE FROM onedb.t_inbound_req
+        WHERE inbound_req_id = #{inboundReqId}
+    </delete>
+
+    <select id="findInboundReqById" resultType="InboundReqResponse">
+        SELECT inbound_req_id, req_date, a.comp_id, biz_id, po_no, status, exp_deliv_date, a.suppl_id, s.suppl_nm,
+                inb_type_cd, inb_class_cd, a.memo
+        FROM onedb.t_inbound_req a
+        inner join onedb.t_suppl s on a.suppl_id = s.suppl_id
+        WHERE inbound_req_id = #{inboundReqId}
+    </select>
+
+    <select id="findInboundReqs" resultType="InboundReqGrid">
+        SELECT inbound_req_id, req_date, cm.comm_nm as inbType, cm2.comm_nm as inbClass, s.suppl_nm
+        FROM onedb.t_inbound_req po
+        inner join onedb.t_suppl s on po.suppl_id = s.suppl_id
+        inner join onedb.t_sys_commcode cm on po.inb_type_cd = cm.comm_cd and cm.comm_gbn = 'inbType'
+        inner join onedb.t_sys_commcode cm2 on po.inb_class_cd = cm2.comm_cd and cm2.comm_gbn = 'inbClass'
+        <where>
+            po.biz_id = #{bizId}
+            and po.req_date between #{fDate} and #{tDate}
+            <if test="inboundReqId !='' and inboundReqId != null">
+                and po.inbound_req_id = #{inboundReqId}
+            </if>
+            <if test="supplId !='' and supplId != null">
+                and po.suppl_id = #{supplId}
+            </if>
+            <if test="inbTypeCd !='' and inbTypeCd != null">
+                and po.inb_type_cd = #{inbTypeCd}
+            </if>
+            <if test="inbClassCd !='' and inbClassCd != null">
+                and po.inb_class_cd = #{inbClassCd}
+            </if>
+        </where>
+
+    </select>
+
+    <!-- PO 품목 삽입 -->
+    <insert id="insertInboundReqItem">
+
+        <selectKey keyProperty="seqNo" resultType="integer" order="BEFORE">
+            SELECT ifnull(MAX(seq_no),0) +1
+            FROM onedb.t_inbound_req_item
+            where inbound_rerq_id = #{inboundReqId}
+        </selectKey>
+
+        INSERT INTO onedb.t_inbound_req_item (
+            inbound_rerq_id, seq_no,  item_id, price_amt, req_qty, make_date, make_lot_no, exp_date,  memo
+        ) VALUES
+        <foreach collection="items" item="item" index="i"  separator=",">
+        (
+            #{inboundReqId},
+             <if test="item.seqNo == null">
+                #{seqNo} + #{i}
+            </if>
+            <if test="item.seqNo != null">
+                #{item.seqNo}
+            </if>
+            , #{item.itemId}, #{item.priceAmt}, #{item.reqQty}, #{item.makeDate}, #{item.makeLotNo}, #{item.expDate}, #{item.memo}
+        )
+        </foreach>
+        on duplicate key update
+        item_id = values(item_id),
+        price_amt = values(price_amt),
+        req_qty = values(req_qty),
+        make_date = values(make_date),
+        make_lot_no = values(make_lot_no),
+        exp_date = values(exp_date),
+        memo = values(memo)
+    </insert>
+
+    <!-- PO 품목 삭제 -->
+    <delete id="deleteInboundReqItemsByPoId">
+        DELETE FROM onedb.t_inbound_req_item
+        WHERE inbound_rerq_id = #{inboundReqId}
+    </delete>
+
+    <!-- PO 품목 조회 -->
+    <select id="findInboundReqItemById" resultType="InboundReqItemResponse">
+        SELECT seq_no, a.item_id, i.item_nm, price_amt, req_qty, make_date, make_lot_no, exp_date, a.memo
+        FROM onedb.t_inbound_req_item a
+        inner join onedb.t_item i on a.item_id = i.item_id
+        WHERE inbound_rerq_id = #{inboundReqId}
+    </select>
+
+</mapper>

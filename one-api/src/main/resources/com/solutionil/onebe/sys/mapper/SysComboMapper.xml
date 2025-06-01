@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solutionil.onebe.sys.mapper.SysComboMapper">
+
+    <select id="getComboData" resultType="ComboData">
+
+        SELECT comm_gbn, comm_cd, comm_nm
+       	FROM onedb.t_sys_commcode
+       	WHERE comm_cd != '.' and use_yn = 'Y'
+       	ORDER BY comm_gbn, seq_no
+    </select>
+
+
+
+    <select id="getComboDataFromTable" resultType="ComboData">
+
+        <choose>
+                <when test="tableGbn == 'biz'">
+                    SELECT biz_id AS comm_cd, biz_nm AS comm_nm
+                    FROM t_biz
+                    WHERE use_yn = 'Y'
+                    and comp_id = #{request.compId}
+                </when>
+                <when test="tableGbn == 'comp'">
+                    SELECT comp_id AS comm_cd, comp_nm AS comm_nm
+                    FROM t_comp
+                </when>
+                <otherwise>
+                    SELECT NULL AS comm_cd, 'Invalid Table Type' AS comm_nm
+                </otherwise>
+            </choose>
+
+    </select>
+
+</mapper>
+
+    

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solutionil.onebe.sys.mapper.SysMenuMapper">
+
+	<select id="getMenu">
+		SELECT *, CAST(seq AS DECIMAL(13,2)) AS seq_num
+		FROM onedb.t_sys_menu
+		WHERE use_yn = 'Y';
+	</select>
+    <select id="selectSysMenuList" resultType="SysMenu">
+        SELECT
+       					 menu_id,
+       					 menu_nm,
+       					 menu_lvl,
+       					 menu_path,
+       					 menu_auth,
+       					 get_child,
+       					 parent_id,
+       					 seq
+       		FROM onedb.t_sys_menu
+       		<where>
+                <if test="menuNm != '' and menuNm != null">
+       		     menu_nm like concat('%' , #{menuNm} , '%')
+                </if>
+                <if test="menuPath != '' and menuPath != null">
+       		        and menu_path like concat('%' , #{menuPath} , '%')
+                </if>
+            </where>
+       		ORDER BY seq
+    </select>
+
+	<select id="selectSysMenuDetail" resultType="SysMenu">
+     	SELECT
+			menu_id,
+			 menu_nm,
+			 menu_lvl,
+			 menu_path,
+			 menu_auth,
+			 get_child,
+			 parent_id,
+			 seq,
+			 main_yn,
+			 use_yn,
+			 menu_id
+		FROM onedb.t_sys_menu
+    		<where>
+    		     menu_id = #{menuId}
+         </where>
+    	ORDER BY seq
+ </select>
+
+	<insert id="insertSysMenu">
+
+		<selectKey keyProperty="menuId" resultType="integer" order="AFTER">
+      		SELECT LAST_INSERT_ID()
+  		</selectKey>
+
+		INSERT INTO onedb.t_sys_menu (
+		    menu_id, parent_id, menu_nm, menu_lvl, menu_path, menu_auth, get_child, seq, main_yn, use_yn, created_id, created_dt
+		) VALUES (
+		    #{menuId}, #{parentId}, #{menuNm}, #{menuLvl}, #{menuPath}, #{menuAuth}, #{getChild}, #{seq}, #{mainYn}, #{useYn}, #{userId}, NOW()
+		)
+		ON DUPLICATE KEY UPDATE
+		    parent_id = VALUES(parent_id),
+		    menu_nm = VALUES(menu_nm),
+		    menu_lvl = VALUES(menu_lvl),
+		    menu_path = VALUES(menu_path),
+		    menu_auth = VALUES(menu_auth),
+		    get_child = VALUES(get_child),
+		    seq = VALUES(seq),
+		    main_yn = VALUES(main_yn),
+		    use_yn = VALUES(use_yn),
+		    modified_id = #{userId},
+		    modified_dt = NOW();
+
+	</insert>
+
+	<select id="getDeleteTarget" parameterType="int">
+         WITH RECURSIVE deleteTarget AS (
+             SELECT menu_id
+             FROM onedb.t_sys_menu
+             WHERE menu_id = #{deptId}
+
+             UNION ALL
+
+             SELECT child.menu_id
+             FROM onedb.t_sys_menu AS child
+             JOIN deleteTarget AS parent ON child.parent_id = parent.menu_id
+         )
+         SELECT menu_id FROM deleteTarget;
+
+ </select>
+	<delete id="deleteSysMenu">
+		delete from onedb.t_sys_menu where menu_id = #{menuId}
+	</delete>
+</mapper>
+
+    

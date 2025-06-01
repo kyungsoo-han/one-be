@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.buy.mapper.PurchaseOrderMapper">
+
+    <insert id="savePurchaseOrder" >
+        <selectKey keyProperty="poId" resultType="long" order="AFTER">
+          SELECT IF(#{poId} IS NOT NULL AND #{poId} != 0, #{poId}, LAST_INSERT_ID())
+        </selectKey>
+        insert into onedb.t_purchase_order
+        (
+         po_id, comp_id, biz_id, cust_id, po_date, deliv_req_date, po_gbn, po_type, memo, created_id, created_dt
+        )
+        values
+        (
+         #{poId}, #{compId}, #{bizId}, #{custId}, #{poDate}, #{delivReqDate}, #{poGbn}, #{poType}, #{memo}, #{userId}, now()
+        )
+        on duplicate key update
+            cust_id = values(cust_id),
+            po_date = values(po_date),
+            deliv_req_date = values(deliv_req_date),
+            po_gbn = values(po_gbn),
+            po_type = values(po_type),
+            memo = values(memo),
+            created_id = values(created_id),
+            created_dt = values(created_dt),
+            modified_id = #{userId},
+            modified_dt = now()
+    </insert>
+
+    <insert id="savePurchaseOrderItem">
+
+        <selectKey keyProperty="seqNo" resultType="integer" order="BEFORE">
+            SELECT ifnull(MAX(seq_no),0) +1
+            FROM onedb.t_purchase_order_item
+            where po_id = #{request.poId}
+        </selectKey>
+
+        insert into onedb.t_purchase_order_item
+        (
+          po_id, seq_no, item_id, item_qty, price_amt, memo, created_id, created_dt
+        )
+        values
+        <foreach collection="items" item="item" index="i"  separator=",">
+         (
+          #{request.poId},
+            <if test="item.seqNo == null">
+                #{seqNo} + #{i}
+            </if>
+            <if test="item.seqNo != null">
+                #{item.seqNo}
+            </if>
+            , #{item.itemId}, #{item.itemQty}, #{item.priceAmt}, #{item.memo}, #{request.userId}, now()
+        )
+        </foreach>
+        on duplicate key update
+         item_id = values(item_id),
+         item_qty = values(item_qty),
+         price_amt = values(price_amt),
+         memo = values(memo),
+         modified_id = #{request.userId},
+         modified_dt = now()
+    </insert>
+
+    <select id="findPurchaseOrderMainGrid" >
+        select t1.po_date, t1.po_id, t2.cust_nm, t3.comm_nm as po_gbn_nm, t4.comm_nm as po_type_nm, t6.emp_nm
+        from onedb.t_purchase_order t1
+            inner join onedb.t_cust t2 on t1.cust_id = t2.cust_id
+            inner join onedb.t_sys_commcode t3 on t3.comm_gbn = 'poGbn' and t3.comm_cd = t1.po_gbn
+            inner join onedb.t_sys_commcode t4 on t4.comm_gbn = 'poType' and t4.comm_cd = t1.po_type
+            inner join onedb.t_sys_user t5 on t1.created_id = t5.user_id
+            inner join onedb.t_emp t6 on t5.emp_id = t6.emp_id
+        <where>
+            t1.comp_id = #{compId}
+        and t1.biz_id = #{bizId}
+        and t1.po_date between #{fDate} and #{tDate}
+        <if test="poId != '' and poId != null ">
+            and t1.po_id = #{poId}
+        </if>
+        <if test="custId != '' and custId != null ">
+            and t1.cust_id = #{custId}
+        </if>
+        <if test="poGbn != '' and poGbn != null ">
+            and t1.po_gbn = #{poGbn}
+        </if>
+        <if test="poType != '' and poType != null ">
+            and t1.po_type = #{poType}
+        </if>
+        </where>
+    </select>
+
+    <select id="findPurchaseOrderDetail">
+        select t1.po_id, t1.po_date, t1.po_gbn, t1.po_type, t1.memo, t1.cust_id, t2.cust_nm, t1.deliv_req_date
+        from onedb.t_purchase_order as t1
+            inner join onedb.t_cust as t2 on t1.cust_id = t2.cust_id
+        where po_id = #{poId}
+    </select>
+
+    <select id="findPurchaseOrderDetailGrid">
+        select t1.seq_no, t1.item_id, t2.item_nm, t1.item_qty, t1.price_amt, t1.memo
+        from onedb.t_purchase_order_item as t1
+            inner join onedb.t_item as t2 on t1.item_id = t2.item_id
+        where po_id = #{poId}
+    </select>
+
+    <delete id="deleteById">
+        delete from onedb.t_purchase_order where po_id = #{poId};
+        delete from onedb.t_purchase_order_item where po_id = #{poId};
+    </delete>
+
+</mapper>

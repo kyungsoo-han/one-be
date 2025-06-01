@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.sys.mapper.SysCommCodeMapper">
+
+    <!-- 공통 코드 메인 저장 (업서트: 중복 시 업데이트) -->
+    <insert id="saveSysCommCodeMain">
+        INSERT INTO onedb.t_sys_commcode (
+            comm_gbn, comm_cd, comm_nm, remark, created_id, created_dt
+        ) VALUES
+        <foreach collection="child" item="item" index="i" separator=",">
+        (
+            #{item.commGbn}, '.', #{item.commNm}, #{item.remark}, #{userId}, NOW()
+        )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+            comm_nm = VALUES(comm_nm),
+            remark = VALUES(remark),
+            modified_id = #{userId},
+            modified_dt = NOW();
+    </insert>
+
+    <!-- 공통 코드 상세 저장 (업서트: 중복 시 업데이트) -->
+    <insert id="saveSysCommCodeDetail">
+        INSERT INTO onedb.t_sys_commcode (
+            comm_gbn, comm_cd, comm_nm,  use_yn, seq_no, string1, string2, string3, string4,
+            number1, number2, number3, number4, sub_remark, created_id, created_dt
+        ) VALUES
+          <foreach collection="child" item="item" index="i" separator=",">
+            (
+            #{commGbn}, #{item.commCd}, #{item.commNm}, #{item.useYn}, #{item.seqNo}, #{item.string1}, #{item.string2}, #{item.string3}, #{item.string4},
+            #{item.number1}, #{item.number2}, #{item.number3}, #{item.number4}, #{item.subRemark}, #{userId}, NOW()
+            )
+          </foreach>
+        ON DUPLICATE KEY UPDATE
+            comm_nm = VALUES(comm_nm),
+            use_yn = VALUES(use_yn),
+            seq_no = VALUES(seq_no),
+            string1 = VALUES(string1),
+            string2 = VALUES(string2),
+            string3 = VALUES(string3),
+            string4 = VALUES(string4),
+            number1 = VALUES(number1),
+            number2 = VALUES(number2),
+            number3 = VALUES(number3),
+            number4 = VALUES(number4),
+            sub_remark = VALUES(sub_remark),
+            modified_id = #{userId},
+            modified_dt = NOW();
+    </insert>
+
+
+    <!-- 공통 코드 조회 -->
+    <select id="selectSysCommCode" resultType="SysCommCode">
+        SELECT comm_gbn, comm_cd, comm_nm, remark, use_yn, seq_no, string1, string2, string3, string4,
+               number1, number2, number3, number4, sub_remark
+        FROM onedb.t_sys_commcode
+        WHERE comm_gbn = #{commGbn} AND comm_cd = #{commCd}
+    </select>
+
+    <!-- 공통 코드 조회 -->
+    <select id="selectSysCommCodeMainList" resultType="SysCommCodeMainResponse">
+        SELECT comm_gbn, comm_nm, remark
+        FROM onedb.t_sys_commcode
+        <where>
+            comm_cd = '.'
+            <if test="commGbn != '' and commGbn != null">
+                AND comm_gbn like concat('%',  #{commGbn}, '%')
+            </if>
+
+            <if test="commNm != '' and commNm != null">
+                AND comm_nm like concat('%',  #{commNm}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSysCommCodeDetailList" resultType="SysCommCodeDetailResponse">
+        SELECT comm_cd, comm_nm, use_yn, seq_no, string1, string2, string3, string4,
+                       number1, number2, number3, number4, sub_remark
+        FROM onedb.t_sys_commcode
+        WHERE comm_gbn = #{commGbn} AND comm_cd != '.'
+    </select>
+    <!-- 공통 코드 목록 조회 -->
+    <select id="selectSysCommCodeList" resultType="SysCommCode">
+        SELECT comm_gbn, comm_cd, comm_nm, remark, use_yn, seq_no, string1, string2, string3, string4,
+               number1, number2, number3, number4, sub_remark, created_id, created_dt, modified_id, modified_dt
+        FROM onedb.t_sys_commcode
+        <where>
+            <if test="commGbn != null">
+                AND comm_gbn = #{commGbn}
+            </if>
+            <if test="useYn != null">
+                AND use_yn = #{useYn}
+            </if>
+        </where>
+    </select>
+
+</mapper>

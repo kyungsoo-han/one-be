@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.inb.mapper.TestPurchaseOrderMapper">
+
+    <insert id="InsertTestPurchaseOrder" >
+
+        SET @NEW_SLIP_NO = ( SELECT ifnull(MAX(cast(slip_no as UNSIGNED) ),0) +1
+                               FROM onedb.INV_PO_MST
+                              WHERE comp_cd = #{param1.compId}
+        ) ;
+
+        INSERT INTO onedb.INV_PO_MST (
+            COMP_CD,
+            SLIP_NO,
+            SEQ_NO,
+            SLIP_DT,
+            REQ_DT,
+            CUST_CD,
+            PO_GBN,
+            REMARK,
+            ITEM_ID,
+            ITEM_QTY,
+            ITEM_REMARK
+        ) VALUES
+        <foreach collection="items" item="item" index="i"  separator=",">
+        (
+            #{param1.compId},
+            @NEW_SLIP_NO,
+            #{i} + 1,
+            #{param1.slipDt},
+            #{param1.reqDt},
+            #{param1.custCd},
+            #{param1.poGbn},
+            #{param1.remark},
+            #{item.itemCd},
+            #{item.itemQty},
+            #{item.itemRemark}
+        )
+        </foreach>
+    </insert>
+
+    <select id="InsertTestPurchaseOrderAfter" resultType="String">
+
+        SELECT @NEW_SLIP_NO as slipNo;
+
+    </select>
+
+    <update id="UpdateTestPurchaseOrder">
+        /*Master 정보 Update*/
+        UPDATE onedb.INV_PO_MST
+           SET REQ_DT       = #{param1.reqDt}
+             , CUST_CD      = #{param1.custCd}
+             , PO_GBN       = #{param1.poGbn}
+             , REMARK       = #{param1.remark}
+             , UPDATE_TIME  = NOW()
+         WHERE SLIP_NO = #{param1.slipNo};
+
+        /* Detail 정보 Update */
+        <foreach collection="items" item="item" index="i" separator=";">
+            <choose>
+                <when test="item.seqNo == 0">
+                    set @NEXT_SEQ =  (  SELECT ifnull(MAX(SEQ_NO), 0) + 1
+                                          FROM onedb.INV_PO_MST
+                                         WHERE comp_cd = #{param1.compId}
+                    );
+
+                    INSERT INTO onedb.INV_PO_MST (
+                        COMP_CD,
+                        SLIP_NO,
+                        SEQ_NO,
+                        SLIP_DT,
+                        REQ_DT,
+                        CUST_CD,
+                        PO_GBN,
+                        REMARK,
+                        ITEM_ID,
+                        ITEM_QTY,
+                        ITEM_REMARK,
+                        UPDATE_TIME
+                    ) VALUES (
+                        #{param1.compId},
+                        #{param1.slipNo},
+                        @NEXT_SEQ,
+                        #{param1.slipDt},
+                        #{param1.reqDt},
+                        #{param1.custCd},
+                        #{param1.poGbn},
+                        #{param1.remark},
+                        #{item.itemCd},
+                        #{item.itemQty},
+                        #{item.itemRemark},
+                        NOW()
+                    )
+                </when>
+                <otherwise>
+                    UPDATE onedb.INV_PO_MST
+                       SET ITEM_QTY = #{item.itemQty},
+                           ITEM_REMARK  = #{item.itemRemark},
+                           UPDATE_TIME = NOW()
+                     WHERE SLIP_NO = #{param1.slipNo}
+                       AND SEQ_NO = #{item.seqNo}
+                </otherwise>
+            </choose>
+        </foreach>
+    </update>
+
+    <select id="SelectTestPurchaseOrderMainGrid" resultType="TestPurchaseOrderResponseMainGrid">
+
+        SELECT  SLIP_DT
+             ,  SLIP_NO
+             ,  REMARK
+          FROM  onedb.INV_PO_MST as A
+         WHERE  COMP_CD = #{compId}
+           AND  SLIP_DT BETWEEN #{fromDate} AND #{toDate}
+        <if test="slipNo !='' and slipNo != null">
+           AND  SLIP_NO LIKE CONCAT('%', #{slipNo}, '%')
+        </if>
+         GROUP  BY SLIP_NO, SLIP_DT, REMARK
+         ORDER  BY cast(slip_no as UNSIGNED), SLIP_DT
+
+    </select>
+
+    <select id="SelectTestPurchaseOrderDetailControl" resultType="TestPurchaseOrderResponseDetailGrid">
+        SELECT  A.SLIP_NO
+             ,  A.SLIP_DT
+             ,  A.REQ_DT
+             ,  A.CUST_CD
+             ,  C.CUST_NM
+             ,  A.PO_GBN
+             ,  A.REMARK
+          FROM  onedb.INV_PO_MST AS A
+          JOIN  onedb.t_cust     AS C ON A.COMP_CD = C.COMP_ID       AND A.CUST_CD = C.CUST_CD
+         WHERE  SLIP_NO =  #{slipNo}
+         GROUP  BY A.SLIP_NO, A.SLIP_DT, A.REQ_DT, A.CUST_CD, C.CUST_NM
+    </select>
+
+    <select id="SelectTestPurchaseOrderDetailGrid" resultType="TestPurchaseOrderResponseItem">
+        SELECT  A.SEQ_NO
+             ,  A.ITEM_ID AS ITEM_CD
+             ,  B.ITEM_NM
+             ,  A.ITEM_QTY
+             ,  A.ITEM_REMARK
+             ,  D.COMM_NM AS ITEM_TYPE_NM
+          FROM  onedb.INV_PO_MST        AS A
+          JOIN  onedb.t_item            AS B ON A.COMP_CD = B.COMP_ID       AND A.ITEM_ID = B.ITEM_CD
+          JOIN  onedb.t_sys_commcode    AS D ON B.ITEM_TYPE_CD = D.COMM_CD  AND D.COMM_GBN = 'categoryLv1'
+         WHERE  SLIP_NO = #{slipNo}
+    </select>
+</mapper>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.mst.mapper.BizMapper">
+
+    <insert id="saveBiz">
+        <selectKey keyProperty="bizId" resultType="integer" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+
+        INSERT INTO onedb.t_biz (
+            comp_id, biz_cd, biz_nm, biz_snm, biz_enm, biz_no, biz_type, biz_item, owner_nm, use_yn, head_office_yn, open_date, close_date,
+            email, tel_no, fax_no, zip_no, zip_addr1, zip_addr2, memo, created_id, created_dt
+        ) VALUES (
+            #{compId}, #{bizCd}, #{bizNm}, #{bizSnm}, #{bizEnm}, #{bizNo}, #{bizType},#{bizItem},  #{ownerNm}, #{useYn}, #{headOfficeYn}, #{openDate}, #{closeDate},
+            #{email}, #{telNo}, #{faxNo}, #{zipNo}, #{zipAddr1}, #{zipAddr2}, #{memo}, #{userId}, now()
+        )
+        on duplicate  key update
+          biz_nm = values(biz_nm),
+          biz_snm = values(biz_snm),
+          biz_enm = values(biz_enm),
+          biz_no = values(biz_no),
+          biz_type = values(biz_type),
+          biz_item = values(biz_item),
+          owner_nm = values(owner_nm),
+          use_yn = values(use_yn),
+          open_date = values(open_date),
+          close_date = values(close_date),
+          email = values(email),
+          tel_no = values(tel_no),
+          fax_no = values(fax_no),
+          zip_no = values(zip_no),
+          zip_addr1 = values(zip_addr1),
+          zip_addr2 = values(zip_addr2),
+          memo = values(memo),
+          modified_id = #{userId},
+          modified_dt = now()
+    </insert>
+
+    <delete id="deleteBiz">
+        DELETE FROM onedb.t_biz
+        WHERE biz_cd = #{bizCd}
+    </delete>
+
+    <select id="findBizById" resultType="BizResponse">
+        SELECT comp_id, biz_id, biz_cd, biz_nm, biz_snm, biz_enm, biz_no, owner_nm, use_yn,biz_type, biz_item,head_office_yn, open_date, close_date,
+                    email, tel_no, fax_no, zip_no, zip_addr1, zip_addr2, memo
+        FROM onedb.t_biz
+        WHERE biz_cd = #{bizCd}
+    </select>
+
+    <select id="findBizs" resultType="MstBizGrid">
+        SELECT biz_id, biz_cd, biz_nm, owner_nm
+        FROM onedb.t_biz
+        <where>
+            comp_id = #{compId}
+            <if test="bizNm != '' and bizNm != null">
+                and biz_nm like concat('%', #{bizNm},'%')
+            </if>
+            <if test="ownerNm != '' and ownerNm != null">
+                and owner_nm like concat('%',#{ownerNm},'%')
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

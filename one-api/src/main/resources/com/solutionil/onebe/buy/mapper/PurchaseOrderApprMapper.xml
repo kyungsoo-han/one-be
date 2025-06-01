@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.buy.mapper.PurchaseOrderApprMapper">
+
+
+    <select id="findPurchaseOrderApproval">
+/* findPurchaseOrderApproval */
+        select 'chk' as chk, tpo.po_id, tpo.po_date, cm.comm_nm as po_gbn_nm, cm2.comm_nm as po_type_nm, tpo.memo,  tc.cust_nm, tpo.deliv_req_date,
+               tpoi.seq_no, ti.item_cd, ti.item_nm, tpoi.item_qty, tpoi.price_amt, tpoi.memo as memo2
+        from onedb.t_purchase_order as tpo
+            inner join onedb.t_purchase_order_item as tpoi on tpo.po_id = tpoi.po_id
+            inner join onedb.t_cust as tc on tpo.cust_id = tc.cust_id
+            inner join onedb.t_item as ti on tpoi.item_id = ti.item_id
+            inner join onedb.t_sys_commcode cm on tpo.po_gbn = cm.comm_cd and cm.comm_gbn = 'poGbn'
+            inner join onedb.t_sys_commcode cm2 on tpo.po_type = cm2.comm_cd and cm2.comm_gbn = 'poType'
+        <where>
+            tpo.comp_id = #{compId}
+            and tpo.biz_id = #{bizId}
+            and tpoi.appr_yn = 'N'
+            and tpo.po_date between #{fDate} and #{tDate}
+            <if test="poId != '' and poId != null">
+            tpo.po_id = #{poId}
+            </if>
+        </where>
+        order by tpo.po_date, tpo.po_id, tpoi.seq_no;
+    </select>
+
+    <update id="approvalPurchaseOrder">
+
+        <foreach collection="request" item="item" index="i"  separator=";">
+            update onedb.t_purchase_order_item
+            set appr_yn = 'Y'
+            where po_id = #{item.poId}
+            and seq_no = #{item.seqNo}
+        </foreach>
+    </update>
+
+</mapper>

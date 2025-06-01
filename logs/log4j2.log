@@ -1,0 +1,161 @@
+[2024-08-26 00:54:00.007] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:00.011] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:00.011] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:00.011] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=OperatingSystem, attribute=ProcessCpuLoad
+[2024-08-26 00:54:00.012] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:00.012] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:00.012] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:00.013] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:00.013] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:00.013] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:01.015] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:01.016] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:01.016] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:01.016] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=OperatingSystem, attribute=ProcessCpuLoad
+[2024-08-26 00:54:01.019] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:01.019] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:01.019] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:01.020] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:01.020] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:01.021] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:02.024] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:02.025] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:02.025] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:02.026] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=OperatingSystem, attribute=ProcessCpuLoad
+[2024-08-26 00:54:02.031] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:02.031] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:02.031] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:02.033] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:02.033] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:02.033] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:03.045] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:03.045] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:03.045] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:03.045] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=OperatingSystem, attribute=ProcessCpuLoad
+[2024-08-26 00:54:03.046] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:03.046] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:03.046] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:03.046] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:03.046] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:03.046] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:04.048] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:04.050] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:04.050] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:04.051] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=OperatingSystem, attribute=ProcessCpuLoad
+[2024-08-26 00:54:04.051] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:04.051] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:04.052] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:04.052] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:04.052] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:04.052] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:05.055] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:05.055] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:05.055] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:05.056] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=OperatingSystem, attribute=ProcessCpuLoad
+[2024-08-26 00:54:05.056] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:05.056] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:05.056] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:05.057] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:05.057] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:05.057] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:06.061] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:06.061] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:06.062] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:06.062] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=OperatingSystem, attribute=ProcessCpuLoad
+[2024-08-26 00:54:06.062] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:06.062] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:06.062] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:06.062] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:06.063] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:06.063] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:06.063] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:06.063] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:07.069] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:07.070] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:07.070] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:07.071] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=OperatingSystem, attribute=ProcessCpuLoad
+[2024-08-26 00:54:07.071] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:07.076] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:07.079] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:07.081] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:07.082] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:07.082] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:08.088] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:08.089] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:08.089] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:08.089] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=OperatingSystem, attribute=ProcessCpuLoad
+[2024-08-26 00:54:08.090] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:08.090] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:08.090] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:08.091] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:08.091] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:08.091] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:09.096] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:09.098] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:09.098] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:09.098] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=OperatingSystem, attribute=ProcessCpuLoad
+[2024-08-26 00:54:09.101] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:09.101] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:09.101] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:09.102] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:09.102] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:09.103] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:10.117] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:10.118] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:10.118] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:10.118] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=OperatingSystem, attribute=ProcessCpuLoad
+[2024-08-26 00:54:10.119] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:10.119] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:10.119] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:10.121] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:10.122] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:10.122] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:11.124] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:11.125] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:11.125] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:11.125] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=OperatingSystem, attribute=ProcessCpuLoad
+[2024-08-26 00:54:11.126] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:11.126] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:11.126] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:11.126] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:11.127] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:11.128] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:11.128] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:11.128] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:12.132] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 82
+[2024-08-26 00:54:12.132] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:12.132] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:12.132] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=OperatingSystem, attribute=ProcessCpuLoad
+[2024-08-26 00:54:12.133] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:12.133] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:12.133] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:12.133] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.t.tcp                                : RMI TCP Connection(2)-127.0.0.1: (port 49719) op = 80
+[2024-08-26 00:54:12.133] DEBUG 87304 --- [on(2)-127.0.0.1] s.r.loader                               : RMI TCP Connection(2)-127.0.0.1: name = "javax.management.ObjectName", codebase = ""
+[2024-08-26 00:54:12.133] DEBUG 87304 --- [on(2)-127.0.0.1] j.m.r.rmi                                : connectionId=rmi://127.0.0.1  1, name=java.lang:type=Memory, attribute=HeapMemoryUsage
+[2024-08-26 00:54:12.343] DEBUG 87304 --- [ionShutdownHook] o.s.b.a.ApplicationAvailabilityBean      : Application availability state ReadinessState changed from ACCEPTING_TRAFFIC to REFUSING_TRAFFIC
+[2024-08-26 00:54:12.344] DEBUG 87304 --- [ionShutdownHook] ConfigServletWebServerApplicationContext : Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@6fe06005, started on Mon Aug 26 00:52:36 KST 2024
+[2024-08-26 00:54:12.346] DEBUG 87304 --- [ionShutdownHook] o.s.c.s.DefaultLifecycleProcessor        : Stopping beans in phase 2147483647
+[2024-08-26 00:54:12.347] DEBUG 87304 --- [ionShutdownHook] o.s.c.s.DefaultLifecycleProcessor        : Bean 'applicationTaskExecutor' completed its stop procedure
+[2024-08-26 00:54:12.347] DEBUG 87304 --- [ionShutdownHook] o.s.c.s.DefaultLifecycleProcessor        : Stopping beans in phase 2147482623
+[2024-08-26 00:54:12.347] DEBUG 87304 --- [ionShutdownHook] o.s.c.s.DefaultLifecycleProcessor        : Bean 'webServerGracefulShutdown' completed its stop procedure
+[2024-08-26 00:54:12.347] DEBUG 87304 --- [ionShutdownHook] o.s.c.s.DefaultLifecycleProcessor        : Stopping beans in phase 2147481599
+[2024-08-26 00:54:12.356] DEBUG 87304 --- [ionShutdownHook] o.s.c.s.DefaultLifecycleProcessor        : Bean 'webServerStartStop' completed its stop procedure
+[2024-08-26 00:54:12.356] DEBUG 87304 --- [ionShutdownHook] o.s.c.s.DefaultLifecycleProcessor        : Stopping beans in phase -2147483647
+[2024-08-26 00:54:12.357] DEBUG 87304 --- [ionShutdownHook] o.s.c.s.DefaultLifecycleProcessor        : Bean 'springBootLoggingLifecycle' completed its stop procedure
+[2024-08-26 00:54:12.358] DEBUG 87304 --- [ionShutdownHook] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans on shutdown
+[2024-08-26 00:54:12.358] DEBUG 87304 --- [ionShutdownHook] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans
+[2024-08-26 00:54:12.358] DEBUG 87304 --- [ionShutdownHook] o.s.s.c.ThreadPoolTaskExecutor           : Shutting down ExecutorService 'applicationTaskExecutor'
+[2024-08-26 00:54:12.359]  INFO 87304 --- [ionShutdownHook] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown initiated...
+[2024-08-26 00:54:12.360] DEBUG 87304 --- [ionShutdownHook] c.z.h.p.HikariPool                       : HikariPool-1 - Before shutdown stats (total=10, active=0, idle=10, waiting=0)
+[2024-08-26 00:54:12.361] DEBUG 87304 --- [nnection closer] c.z.h.p.PoolBase                         : HikariPool-1 - Closing connection org.mariadb.jdbc.Connection@1660ea10: (connection evicted)
+[2024-08-26 00:54:12.364] DEBUG 87304 --- [nnection closer] c.z.h.p.PoolBase                         : HikariPool-1 - Closing connection org.mariadb.jdbc.Connection@f987ceb: (connection evicted)
+[2024-08-26 00:54:12.367] DEBUG 87304 --- [nnection closer] c.z.h.p.PoolBase                         : HikariPool-1 - Closing connection org.mariadb.jdbc.Connection@5a8d84fd: (connection evicted)
+[2024-08-26 00:54:12.370] DEBUG 87304 --- [nnection closer] c.z.h.p.PoolBase                         : HikariPool-1 - Closing connection org.mariadb.jdbc.Connection@485a34d: (connection evicted)
+[2024-08-26 00:54:12.372] DEBUG 87304 --- [nnection closer] c.z.h.p.PoolBase                         : HikariPool-1 - Closing connection org.mariadb.jdbc.Connection@16171760: (connection evicted)
+[2024-08-26 00:54:12.375] DEBUG 87304 --- [nnection closer] c.z.h.p.PoolBase                         : HikariPool-1 - Closing connection org.mariadb.jdbc.Connection@680435b8: (connection evicted)
+[2024-08-26 00:54:12.377] DEBUG 87304 --- [nnection closer] c.z.h.p.PoolBase                         : HikariPool-1 - Closing connection org.mariadb.jdbc.Connection@7816faf6: (connection evicted)
+[2024-08-26 00:54:12.380] DEBUG 87304 --- [nnection closer] c.z.h.p.PoolBase                         : HikariPool-1 - Closing connection org.mariadb.jdbc.Connection@ddc84a6: (connection evicted)
+[2024-08-26 00:54:12.382] DEBUG 87304 --- [nnection closer] c.z.h.p.PoolBase                         : HikariPool-1 - Closing connection org.mariadb.jdbc.Connection@6dfc9576: (connection evicted)
+[2024-08-26 00:54:12.384] DEBUG 87304 --- [nnection closer] c.z.h.p.PoolBase                         : HikariPool-1 - Closing connection org.mariadb.jdbc.Connection@71efab6b: (connection evicted)
+[2024-08-26 00:54:12.387] DEBUG 87304 --- [ionShutdownHook] c.z.h.p.HikariPool                       : HikariPool-1 - After shutdown stats (total=0, active=0, idle=0, waiting=0)
+[2024-08-26 00:54:12.387]  INFO 87304 --- [ionShutdownHook] c.z.h.HikariDataSource                   : HikariPool-1 - Shutdown completed.

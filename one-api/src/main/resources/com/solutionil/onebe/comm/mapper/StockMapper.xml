@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.solutionil.onebe.comm.mapper.StockMapper">
+
+    <select id="findStocks">
+        select stock_id, s.comp_id, s.biz_id, s.item_id, pallet_qty, box_qty, case_qty, ea_qty, stock_qty, reserved_qty, available_qty,
+               lot_no, s.wh_id, s.zone_id, s.loc_id, make_date, exp_date,
+               pallet_unit_qty, box_unit_qty
+        from onedb.t_stock as s
+            inner join onedb.t_item as i on i.item_id = s.item_id
+        where s.comp_id = #{compId}
+            and s.biz_id = #{bizId}
+            and s.item_id = #{itemId}
+            and z.stage_yn = 'N'
+        order by exp_date asc;
+    </select>
+
+    <!-- 재고 테이블에 새 데이터 추가 -->
+    <insert id="insertStock" useGeneratedKeys="true" keyProperty="stockId">
+        INSERT INTO onedb.t_stock (
+            comp_id, biz_id, item_id,
+                     pallet_qty, box_qty, case_qty, ea_qty,
+                     stock_qty, lot_no,
+            wh_id, zone_id, loc_id, make_date, exp_date, created_dt
+        ) VALUES (
+            #{compId}, #{bizId}, #{itemId},
+                  #{palletQty},#{boxQty}, #{caseQty}, #{eaQty},
+                  #{totalQty}, #{lotNo},
+            #{whId}, #{zoneId}, #{locId}, #{makeDate}, #{expDate}, NOW()
+        )
+        ON DUPLICATE KEY UPDATE
+             stock_qty = stock_qty + VALUES(stock_qty),  -- 재고만 증가
+             modified_dt = NOW();
+    </insert>
+
+    <!-- 재고 이력 테이블에 기록 추가 -->
+    <insert id="insertStockHistory">
+        INSERT INTO onedb.t_stock_history (
+            comp_id, biz_id, stock_id, io_type, item_id, wh_id, zone_id, loc_id, lot_no,
+            qty, work_type, reference_id, created_id, created_dt
+        ) VALUES (
+            #{compId}, #{bizId}, #{stockId}, #{ioType}, #{itemId}, #{whId}, #{zoneId}, #{locId}, #{lotNo},
+            #{totalQty}, #{workType}, #{inboundId}, #{userId}, NOW()
+        )
+    </insert>
+
+    <delete id="deleteStockHistory">
+        delete from onedb.t_stock_history where reference_id = #{putawayId} and work_type = #{workType} and io_type = #{ioType} ;
+    </delete>
+    <!-- 이전 로케이션에서 재고 충분성 체크 -->
+    <select id="getAvailableStock" resultType="int">
+        SELECT available_qty
+        FROM onedb.t_stock
+        WHERE comp_id = #{compId}
+        AND biz_id = #{bizId}
+        AND item_id = #{itemId}
+        AND lot_no = #{lotNo}
+        AND loc_id = #{previousLocId}
+    </select>
+
+<!--    <update id="deductStock">
+        UPDATE onedb.t_stock
+        SET reserved_qty = reserved_qty - #{totalQty},  &#45;&#45; 예약 재고 차감
+            stock_qty = stock_qty - #{totalQty},  &#45;&#45; 실재고 차감
+            modified_dt = NOW()
+        WHERE company_id = #{companyId}
+          AND business_id = #{businessId}
+          AND item_id = #{itemId}
+          AND lot_no = #{lotNo}
+          AND location_id = #{previousLocationId}
+          AND stock_qty >= #{totalQty};  &#45;&#45; 충분한 재고가 있는 경우에만 차감
+    </update>-->
+
+    <update id="deductStock">
+        UPDATE onedb.t_stock
+        SET reserved_qty = reserved_qty - #{totalQty},     -- 예약 재고 낱개 수량 차감
+            stock_qty = stock_qty - #{totalQty}     ,         -- 실재고 낱개 수량 차감
+
+            -- 남은 stock_qty를 기준으로 팔레트, 박스, 케이스, 낱개로 재계산
+            pallet_qty = (stock_qty) / #{palletUnitQty},
+            box_qty = (stock_qty % #{palletUnitQty}) / #{boxUnitQty},
+            case_qty = ((stock_qty % #{palletUnitQty}) % #{boxUnitQty}) / #{caseUnitQty},
+            ea_qty = ((stock_qty % #{palletUnitQty}) % #{boxUnitQty}) % #{caseUnitQty},
+            modified_dt = NOW()
+        WHERE comp_id = #{compId}
+          AND biz_id = #{bizId}
+          AND item_id = #{itemId}
+          AND lot_no = #{lotNo}
+          AND loc_id = #{previousLocId}
+          AND stock_qty >= #{totalQty};  -- 충분한 재고가 있는 경우에만 차감
+    </update>
+
+    <update id="reservedStock">
+        UPDATE onedb.t_stock
+        SET reserved_qty = reserved_qty + #{totalQty},  -- 예약 재고 증가
+            modified_dt = NOW()
+        WHERE comp_id = #{compId}
+          AND biz_id = #{bizId}
+          AND item_id = #{itemId}
+          AND lot_no = #{lotNo}
+          AND loc_id = #{previousLocId}
+          AND stock_qty >= #{totalQty};  -- 충분한 재고가 있는 경우에만 차감
+    </update>
+
+</mapper>
