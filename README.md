@@ -14,10 +14,10 @@
 
 ## 🌐 URL
 - **프론트엔드 (C# WinForm) 다운로드:**  
-  [https://one.solutionil.com](https://one.solutionil.com)
+  ~~[https://one.solutionil.com](https://one.solutionil.com)~~
   
 - **백엔드 (API 서버 - Swagger 문서):**  
-  [https://one-api.solutionil.com/swagger-ui/index.html](https://one-api.solutionil.com/swagger-ui/index.html)
+  ~~[https://one-api.solutionil.com/swagger-ui/index.html](https://one-api.solutionil.com/swagger-ui/index.html)~~
 
 ## 📌 Languages
 - Java
